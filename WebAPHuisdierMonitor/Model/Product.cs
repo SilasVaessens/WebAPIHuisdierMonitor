@@ -44,7 +44,7 @@ namespace WebAPIHuisdierMonitor.Model
 
         public void DeleteProduct(Product product)
         {
-            bool Exists = ProductDAL.ProductExists(product.UserID, product.ProductID); //controleer of specifiek product bestaat
+            bool? Exists = ProductDAL.ProductExists(product.UserID, product.ProductID); //controleer of specifiek product bestaat
             if (Exists == true)
             {
                 try
@@ -53,8 +53,12 @@ namespace WebAPIHuisdierMonitor.Model
                 }
                 catch (SqlException) //als er iets misgaat in de database
                 {
-                    throw;
+                    throw new DivideByZeroException();
                 }
+            }
+            if (Exists == null)
+            {
+                throw new DivideByZeroException();
             }
             else
             {
@@ -62,30 +66,34 @@ namespace WebAPIHuisdierMonitor.Model
             }
         }
 
-        public List<Product> GetAllProducts(int UserID)
+        public List<Product> GetAllProducts(string UniqueIdentifier)
         {
-            bool Exists = ProductDAL.ProductExists(UserID); //controleer of user producten geregistreerd heeft staan
+            bool? Exists = ProductDAL.ProductExists(UniqueIdentifier); //controleer of user producten geregistreerd heeft staan
             if (Exists == true)
             {
                 try
                 {
-                    return ProductDAL.GetAllProducts(UserID);
+                    return ProductDAL.GetAllProducts(UniqueIdentifier);
                 }
                 catch (SqlException) //als er iets misgaat in de database
                 {
-                    throw;
+                    throw new DivideByZeroException();
                 }
+            }
+            if (Exists == null)
+            {
+                throw new DivideByZeroException();
             }
             else
             {
-                throw new ArgumentNullException("Product bestaat niet"); // product niet in database
+                throw new ArgumentNullException(); // product niet in database
             }
 
         }
 
         public void UpdateProduct(Product product)
         {
-            bool Exists = ProductDAL.ProductExists(product.UserID, product.ProductID); //controleer of specifiek product bestaat
+            bool? Exists = ProductDAL.ProductExists(product.UserID, product.ProductID); //controleer of specifiek product bestaat
             if (Exists == true)
             {
                 try
@@ -94,8 +102,12 @@ namespace WebAPIHuisdierMonitor.Model
                 }
                 catch (SqlException) //als er iets misgaat in de database
                 {
-                    throw;
+                    throw new DivideByZeroException();
                 }
+            }
+            if (Exists == null)
+            {
+                throw new DivideByZeroException();
             }
             else
             {
@@ -103,9 +115,9 @@ namespace WebAPIHuisdierMonitor.Model
             }
         }
 
-        public int GetProductID(string UniqueIdentifier)
+        public Product GetProductIDAndUserID(string UniqueIdentifier)
         {
-            bool Exist = ProductDAL.ProductExists(UniqueIdentifier);
+            bool? Exist = ProductDAL.ProductExists(UniqueIdentifier);
             if (Exist == true)
             {
                 int FailureCount = 0;
@@ -113,24 +125,28 @@ namespace WebAPIHuisdierMonitor.Model
                 {
                     try
                     {
-                        if (FailureCount >= 20)
+                        if (FailureCount >= 20) //gooit error bij 20 of meer pogingen
                         {
                             throw new DivideByZeroException();
                         }
-                        int ProductID = ProductDAL.GetProductID(UniqueIdentifier);
-                        return ProductID;
+                        return ProductDAL.GetProductIDAndUserID(UniqueIdentifier); ;
                     }
-                    catch (SqlException)
+                    catch (SqlException) //sql error bij het verkrijgen van user ID en product ID
                     {
                         FailureCount++;
                         continue;
                     }
                 }
             }
-            else
+            if (Exist == null) //sql error bij checken of product bestaat
+            {
+                throw new DivideByZeroException();
+            }
+            else //product staat niet in database
             {
                 throw new ArgumentNullException();
             }
+
         }
     }
 }

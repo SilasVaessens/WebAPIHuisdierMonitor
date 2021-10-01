@@ -13,7 +13,7 @@ namespace WebAPIHuisdierMonitor.DAL
         private readonly static string ConnString = ""; 
         private readonly static SqlConnection conn = new SqlConnection(ConnString);
 
-        public static bool ProductExists(int ProductID, int UserID)
+        public static bool? ProductExists(int ProductID, int UserID)
         {
             Product product = new Product();
             using SqlCommand cmd = new SqlCommand(ConnString);
@@ -44,46 +44,11 @@ namespace WebAPIHuisdierMonitor.DAL
             catch (SqlException)
             {
                 conn.Close();
-                return false;
+                return null;
             }
         }
 
-        public static bool ProductExists(int UserID)
-        {
-            List<int> Products = new List<int>();
-            using SqlCommand cmd = new SqlCommand(ConnString);
-            cmd.Connection = conn;
-            cmd.CommandText = "SELECT * FROM Products WHERE EXISTS (SELECT * FROM Products WHERE UserID = @UserID";
-            cmd.Parameters.AddWithValue("@UserID", UserID);
-            try
-            {
-                conn.Open();
-                using SqlDataReader reader = cmd.ExecuteReader();
-                while (reader.Read())
-                {
-                    int ID = (int)reader["UserID"];
-                    Products.Add(ID);
-                }
-                if (Products.Count > 0)
-                {
-                    conn.Close();
-                    return true;
-                }
-                else
-                {
-                    conn.Close();
-                    return false;
-                }
-            }
-            catch (SqlException)
-            {
-                conn.Close();
-                return false;
-            }
-
-        }
-
-        public static bool ProductExists(string UniqueIdentifier)
+        public static bool? ProductExists(string UniqueIdentifier)
         {
             Product product = new Product();
             using SqlCommand cmd = new SqlCommand(ConnString);
@@ -112,7 +77,7 @@ namespace WebAPIHuisdierMonitor.DAL
             catch (SqlException)
             {
                 conn.Close();
-                return false;
+                return null;
             }
 
         }
@@ -136,13 +101,13 @@ namespace WebAPIHuisdierMonitor.DAL
             }
         }
         
-        public static List<Product> GetAllProducts(int UserID)
+        public static List<Product> GetAllProducts(string UniqueIdentifier)
         {
             List<Product> Products = new List<Product>();
             using SqlCommand cmd = new SqlCommand(ConnString);
             cmd.Connection = conn;
-            cmd.CommandText = "SELECT * FROM Products WHERE UserID = @UserID";
-            cmd.Parameters.AddWithValue("@UserID", UserID);
+            cmd.CommandText = "SELECT * FROM Products WHERE UniqueIdentifier = @UniqueIdentifier";
+            cmd.Parameters.AddWithValue("@UniqueIdentifier", UniqueIdentifier);
             try
             {
                 conn.Open();
@@ -189,9 +154,9 @@ namespace WebAPIHuisdierMonitor.DAL
             }
         }
 
-        public static int GetProductID(string UniqueIdentifier)
+        public static Product GetProductIDAndUserID(string UniqueIdentifier)
         {
-            int ProductID = new int();
+            Product product = new Product();
             using SqlCommand cmd = new SqlCommand(ConnString);
             cmd.Connection = conn;
             cmd.CommandText = "SELECT * FROM Products WHERE UniqueIdentifier = @UniqueIdentifier";
@@ -202,10 +167,11 @@ namespace WebAPIHuisdierMonitor.DAL
                 using SqlDataReader reader = cmd.ExecuteReader();
                 while (reader.Read())
                 {
-                    ProductID = (int)reader["ProductID"];
+                    product.ProductID = (int)reader["ProductID"];
+                    product.UserID = (int)reader["UserID"];
                 }
                 conn.Close();
-                return ProductID;
+                return product;
             }
             catch (SqlException)
             {

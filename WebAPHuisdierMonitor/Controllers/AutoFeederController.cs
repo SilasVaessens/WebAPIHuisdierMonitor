@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using WebAPIHuisdierMonitor.Model;
+using Microsoft.AspNetCore.Http;
 
 namespace WebAPIHuisdierMonitor.Controllers
 {
@@ -11,28 +12,76 @@ namespace WebAPIHuisdierMonitor.Controllers
     [Route("[controller]")]
     public class AutoFeederController : ControllerBase
     {
-        [HttpPost]
-        public IActionResult AddAutoFeederMeasurement()
-        {
-            return Ok();
-        }
+        private readonly static AutoFeeder StaticAutoFeeder = new AutoFeeder();
 
         [HttpGet]
-        public IActionResult GetAutoFeederMeasurements()
+        public IActionResult GetAutoFeederMeasurements([FromBody] AutoFeeder autoFeeder)
         {
-            return Ok();
+            try
+            {
+                return Ok(StaticAutoFeeder.GetMeasurement(autoFeeder));
+            }
+            catch (DivideByZeroException)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+            catch (ArgumentNullException)
+            {
+                return StatusCode(StatusCodes.Status404NotFound);
+            }
         }
 
         [HttpGet("GetAll")]
-        public IActionResult GetAllAutoFeederMeasurements()
+        public IActionResult GetAllAutoFeederMeasurements([FromBody] AutoFeeder autoFeeder)
         {
-            return Ok();
+            try
+            {
+                return Ok(StaticAutoFeeder.GetAllMeasurements(autoFeeder));
+            }
+            catch (DivideByZeroException)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+            catch (ArgumentNullException)
+            {
+                return StatusCode(StatusCodes.Status404NotFound);
+            }
         }
 
-        [HttpGet]
-        public IActionResult DeleteAllAutoFeederMeasurements()
+        [HttpDelete]
+        public IActionResult DeleteAllAutoFeederMeasurements([FromBody] AutoFeeder autoFeeder)
         {
-            return Ok();
+            try
+            {
+                StaticAutoFeeder.DeleteAllMeasurements(autoFeeder);
+                return Ok();
+            }
+            catch (DivideByZeroException)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+            catch (ArgumentNullException)
+            {
+                return StatusCode(StatusCodes.Status404NotFound);
+            }
+        }
+
+        [HttpPost]
+        public IActionResult AddAutoFeederMeasurement([FromBody] AutoFeeder autoFeeder)
+        {
+            try
+            {
+                StaticAutoFeeder.AddMeasurement(autoFeeder);
+                return Ok();
+            }
+            catch (DivideByZeroException)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+            catch (ArgumentNullException)
+            {
+                return StatusCode(StatusCodes.Status404NotFound);
+            }
         }
     }
 }

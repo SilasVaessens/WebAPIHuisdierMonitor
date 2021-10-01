@@ -31,17 +31,16 @@ namespace WebAPIHuisdierMonitor.Controllers
             }
             catch (ArgumentNullException) //product bestaat niet in database
             {
-                return StatusCode(StatusCodes.Status409Conflict);
+                return StatusCode(StatusCodes.Status404NotFound);
             } 
         }
 
         [HttpGet("{UserID}")]
-        public IActionResult GetAllProducts(int UserID)
+        public IActionResult GetAllProducts([FromBody] Product product)
         {
             try
             {
-                List<Product> AllProducts =  StaticProduct.GetAllProducts(UserID);
-                return Ok(AllProducts);
+                return Ok(StaticProduct.GetAllProducts(product.UniqueIdentifier));
             }
             catch (SqlException) //ging iets mis in de database
             {
@@ -49,7 +48,7 @@ namespace WebAPIHuisdierMonitor.Controllers
             }
             catch (ArgumentNullException) //geen geregistreerde producten bij user
             {
-                return StatusCode(StatusCodes.Status409Conflict); 
+                return StatusCode(StatusCodes.Status404NotFound); 
             }
 
         }
@@ -68,7 +67,7 @@ namespace WebAPIHuisdierMonitor.Controllers
             }
             catch (ArgumentNullException) //Product bestaat niet in database
             {
-                return StatusCode(StatusCodes.Status409Conflict);
+                return StatusCode(StatusCodes.Status404NotFound);
             }
 
         }
