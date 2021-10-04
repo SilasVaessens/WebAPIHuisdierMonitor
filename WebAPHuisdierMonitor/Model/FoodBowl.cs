@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Data.Sql;
 using WebAPIHuisdierMonitor.DAL;
+using System.Data.SqlClient;
 
 namespace WebAPIHuisdierMonitor.Model
 {
@@ -25,22 +26,112 @@ namespace WebAPIHuisdierMonitor.Model
 
         public FoodBowl GetMeasurement(FoodBowl foodBowl)
         {
-
+            bool? Exists = FoodBowlDAL.MeasurementsExists(foodBowl.ProductID, foodBowl.UserID);
+            if (Exists == true)
+            {
+                try
+                {
+                    return FoodBowlDAL.GetMeasurement(foodBowl.ProductID, foodBowl.UserID);
+                }
+                catch (SqlException) //sql error bij verkrijgen van measurement
+                {
+                    throw new DivideByZeroException();
+                }
+            }
+            if (Exists == null) // sql error bij het kijken of de het product bestaat
+            {
+                throw new DivideByZeroException();
+            }
+            else  // er staan geen measurements voor het specifieke product in de database
+            {
+                throw new ArgumentNullException();
+            }
         }
 
         public List<FoodBowl> GetAllMeasurements(FoodBowl foodBowl)
         {
-
+            bool? Exists = FoodBowlDAL.MeasurementsExists(foodBowl.ProductID, foodBowl.UserID);
+            if (Exists == true)
+            {
+                try
+                {
+                    return FoodBowlDAL.GetAllMeasurement(foodBowl.ProductID, foodBowl.UserID);
+                }
+                catch (SqlException) //sql error bij verkrijgen alle measurements
+                {
+                    throw new DivideByZeroException();
+                }
+            }
+            if (Exists == null) // sql error bij het kijken of de het product bestaat
+            {
+                throw new DivideByZeroException();
+            }
+            else // er staan geen measurements voor het specifieke product in de database
+            {
+                throw new ArgumentNullException();
+            }
         }
 
         public void AddMeasurement(FoodBowl foodBowl)
         {
+            try
+            {
+                Product Feeder = GetProductIDAndUserID(foodBowl.UniqueIdentifier);
+                foodBowl.ProductID = Feeder.ProductID;
+                foodBowl.UserID = Feeder.UserID;
+                foodBowl.Time = DateTime.Now;
 
+                int FailureCount = 0;
+                while (true)
+                {
+                    try
+                    {
+                        if (FailureCount >= 20)
+                        {
+                            throw new DivideByZeroException();
+                        }
+                        FoodBowlDAL.AddMeasurement(foodBowl);
+                        break;
+                    }
+                    catch (DivideByZeroException)
+                    {
+                        FailureCount++;
+                        continue;
+                    }
+                }
+            }
+            catch (DivideByZeroException) //sql error, komt van verkrijgen user ID en product ID of van toevoegen measurement aan database
+            {
+                throw;
+            }
+            catch (ArgumentNullException) //product niet in database bij verkrijgen user id en product id
+            {
+                throw;
+            }
         }
 
         public void DeleteAllMeasurement(FoodBowl foodBowl)
         {
-
+            bool? Exists = FoodBowlDAL.MeasurementsExists(foodBowl.ProductID, foodBowl.UserID);
+            if (Exists == true)
+            {
+                try
+                {
+                    FoodBowlDAL.DeleteAllMeasurements(foodBowl.ProductID, foodBowl.UserID);
+                }
+                catch (SqlException) // sql error bij het verwijderen van alle measurements
+                {
+                    throw new DivideByZeroException();
+                }
+            }
+            if (Exists == null) // sql error bij het kijken of de het product bestaat
+            {
+                throw new DivideByZeroException();
+            }
+            else // er staan geen measurements voor het specifieke product in de database
+            {
+                throw new ArgumentNullException();
+            }
         }
     }
 }

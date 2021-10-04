@@ -67,7 +67,6 @@ namespace WebAPIHuisdierMonitor.Model
             {
                 throw new ArgumentNullException();
             }
-
         }
 
         public void AddMeasurement(AutoFeeder autoFeeder)
@@ -78,6 +77,7 @@ namespace WebAPIHuisdierMonitor.Model
                 autoFeeder.ProductID = Feeder.ProductID;
                 autoFeeder.UserID = Feeder.UserID;
                 autoFeeder.Time = DateTime.Now;
+
                 int FailureCount = 0;
                 while (true)
                 {

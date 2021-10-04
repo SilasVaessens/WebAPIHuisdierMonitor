@@ -35,7 +35,7 @@ namespace WebAPIHuisdierMonitor.Controllers
             } 
         }
 
-        [HttpGet("{UserID}")]
+        [HttpGet]
         public IActionResult GetAllProducts([FromBody] Product product)
         {
             try

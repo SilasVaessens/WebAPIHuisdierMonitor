@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using WebAPIHuisdierMonitor.Model;
+using Microsoft.AspNetCore.Http;
 
 namespace WebAPIHuisdierMonitor.Controllers
 {
@@ -11,28 +12,76 @@ namespace WebAPIHuisdierMonitor.Controllers
     [Route("[controller]")]
     public class FoodBowlController : ControllerBase
     {
+        private readonly static FoodBowl StaticFoodBowl = new FoodBowl();
+
         [HttpPost]
-        public IActionResult AddFoodBowlMeasurement()
+        public IActionResult AddFoodBowlMeasurement([FromBody] FoodBowl foodBowl)
         {
-            return Ok();
+            try
+            {
+                StaticFoodBowl.AddMeasurement(foodBowl);
+                return Ok();
+            }
+            catch (DivideByZeroException)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+            catch (ArgumentNullException)
+            {
+                return StatusCode(StatusCodes.Status404NotFound);
+            }
         }
 
         [HttpGet]
-        public IActionResult GetFoodBowlMeasurements()
+        public IActionResult GetFoodBowlMeasurements([FromBody] FoodBowl foodBowl)
         {
-            return Ok();
+            try
+            {
+                return Ok(StaticFoodBowl.GetMeasurement(foodBowl));
+            }
+            catch (DivideByZeroException)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+            catch (ArgumentNullException)
+            {
+                return StatusCode(StatusCodes.Status404NotFound);
+            }
         }
 
         [HttpGet("GetAll")]
-        public IActionResult GetAllFoodBowlMeasurements()
+        public IActionResult GetAllFoodBowlMeasurements([FromBody] FoodBowl foodBowl)
         {
-            return Ok();
+            try
+            {
+                return Ok(StaticFoodBowl.GetAllMeasurements(foodBowl));
+            }
+            catch (DivideByZeroException)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+            catch (ArgumentNullException)
+            {
+                return StatusCode(StatusCodes.Status404NotFound);
+            }
         }
 
         [HttpDelete]
-        public IActionResult DeleteAllFoodBowlMeasurements()
+        public IActionResult DeleteAllFoodBowlMeasurements([FromBody] FoodBowl foodBowl)
         {
-            return Ok();
+            try
+            {
+                StaticFoodBowl.DeleteAllMeasurement(foodBowl);
+                return Ok();
+            }
+            catch (DivideByZeroException)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+            catch (ArgumentNullException)
+            {
+                return StatusCode(StatusCodes.Status404NotFound);
+            }
         }
     }
 }
