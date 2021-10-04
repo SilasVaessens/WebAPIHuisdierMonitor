@@ -110,7 +110,7 @@ namespace WebAPIHuisdierMonitor.Model
             }
         }
 
-        public void DeleteAllMeasurement(FoodBowl foodBowl)
+        public void DeleteAllMeasurements(FoodBowl foodBowl)
         {
             bool? Exists = FoodBowlDAL.MeasurementsExists(foodBowl.ProductID, foodBowl.UserID);
             if (Exists == true)

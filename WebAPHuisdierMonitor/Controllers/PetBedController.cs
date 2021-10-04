@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,28 +12,76 @@ namespace WebAPIHuisdierMonitor.Controllers
     [Route("[controller]")]
     public class PetBedController : ControllerBase
     {
+        private readonly static PetBed StaticPetBed = new PetBed();
+
         [HttpPost]
-        public IActionResult AddPetBedMeasurement()
+        public IActionResult AddPetBedMeasurement([FromBody] PetBed petBed)
         {
-            return Ok();
+            try
+            {
+                StaticPetBed.AddMeasurement(petBed);
+                return Ok();
+            }
+            catch (DivideByZeroException)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+            catch (ArgumentNullException)
+            {
+                return StatusCode(StatusCodes.Status404NotFound);
+            }
         }
 
         [HttpGet]
-        public IActionResult GetPetBedMeasurement()
+        public IActionResult GetPetBedMeasurement([FromBody] PetBed petBed)
         {
-            return Ok();
+            try
+            {
+                return Ok(StaticPetBed.GetMeasurement(petBed));
+            }
+            catch (DivideByZeroException)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+            catch (ArgumentNullException)
+            {
+                return StatusCode(StatusCodes.Status404NotFound);
+            }
         }
 
         [HttpGet("GetAll")]
-        public IActionResult GetAllPetBedMeasurements()
+        public IActionResult GetAllPetBedMeasurements([FromBody] PetBed petBed)
         {
-            return Ok();
+            try
+            {
+                return Ok(StaticPetBed.GetAllMeasurements(petBed));
+            }
+            catch (DivideByZeroException)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+            catch (ArgumentNullException)
+            {
+                return StatusCode(StatusCodes.Status404NotFound);
+            }
         }
 
         [HttpDelete]
-        public IActionResult DeleteAllPetBedMeasurements()
+        public IActionResult DeleteAllPetBedMeasurements([FromBody] PetBed petBed)
         {
-            return Ok();
+            try
+            {
+                StaticPetBed.DeleteAllMeasurements(petBed);
+                return Ok(); 
+            }
+            catch (DivideByZeroException)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+            catch (ArgumentNullException)
+            {
+                return StatusCode(StatusCodes.Status404NotFound);
+            }
         }
     }
 }

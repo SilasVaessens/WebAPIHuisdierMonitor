@@ -71,7 +71,7 @@ namespace WebAPIHuisdierMonitor.Controllers
         {
             try
             {
-                StaticFoodBowl.DeleteAllMeasurement(foodBowl);
+                StaticFoodBowl.DeleteAllMeasurements(foodBowl);
                 return Ok();
             }
             catch (DivideByZeroException)
