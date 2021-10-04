@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,28 +12,77 @@ namespace WebAPIHuisdierMonitor.Controllers
     [Route("[controller]")]
     public class WaterBowlController : ControllerBase
     {
+        private readonly static WaterBowl StaticWaterBowl = new WaterBowl();
+
         [HttpPost]
-        public IActionResult AddWaterBowlMeasurement()
+        public IActionResult AddWaterBowlMeasurement([FromBody] WaterBowl waterBowl)
         {
-            return Ok();
+            try
+            {
+                StaticWaterBowl.AddMeasurement(waterBowl);
+                return Ok();
+            }
+            catch (DivideByZeroException)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+            catch (ArgumentNullException)
+            {
+                return StatusCode(StatusCodes.Status404NotFound);
+            }
         }
 
         [HttpGet]
-        public IActionResult GetWaterBowlMeasurement()
+        public IActionResult GetWaterBowlMeasurement([FromBody] WaterBowl waterBowl)
         {
-            return Ok();
+            try
+            {
+                return Ok(StaticWaterBowl.GetMeasurement(waterBowl));
+            }
+            catch (DivideByZeroException)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+            catch (ArgumentNullException)
+            {
+                return StatusCode(StatusCodes.Status404NotFound);
+            }
         }
 
-        [HttpGet("/GetAll")]
-        public IActionResult GetAllWaterBowlMeasurements()
+        [HttpGet("GetAll")]
+        public IActionResult GetAllWaterBowlMeasurements([FromBody] WaterBowl waterBowl)
         {
-            return Ok();
+            try
+            {
+                return Ok(StaticWaterBowl.GetAllMeasurements(waterBowl));
+            }
+            catch (DivideByZeroException)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+            catch (ArgumentNullException)
+            {
+                return StatusCode(StatusCodes.Status404NotFound);
+            }
         }
 
         [HttpDelete]
-        public IActionResult DeleteAllWaterBowlMeasurements()
+        public IActionResult DeleteAllWaterBowlMeasurements([FromBody] WaterBowl waterBowl)
         {
-            return Ok();
+            try
+            {
+                StaticWaterBowl.DeleteAllMeasurements(waterBowl);
+                return Ok();
+            }
+            catch (DivideByZeroException)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+            catch (ArgumentNullException)
+            {
+                return StatusCode(StatusCodes.Status404NotFound);
+            }
+
         }
     }
 }

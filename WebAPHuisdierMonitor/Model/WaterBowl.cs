@@ -1,54 +1,137 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
+using WebAPIHuisdierMonitor.DAL;
 
 namespace WebAPIHuisdierMonitor.Model
 {
-    public class WaterBowl
+    public class WaterBowl : Product
     {
-        public int WaterBowlMeasurementID { get; set; }
-        public float WeightWaterBowl { get; set; }
-        public DateTime WeightTimeWater { get; set; }
-        public bool UnderLimitWater { get; set; }
-        public int RFIDValueWaterBowl { get; set; }
-        public string WaterBowlName { get; set; }
-        public string WaterBowlSSID { get; set; }
-        public string WaterBowlMAC { get; set; }
-        public int ProductID { get; set; }
+        public int RFID { get; set; }
+        public float Weight { get; set; }
 
-        public WaterBowl(int WaterID, float Weight, DateTime Time, bool Limit, int RFID, string Name, string SSID, string MAC, int productID)
+        public WaterBowl()
         {
-            WaterBowlMeasurementID = WaterID;
-            WeightWaterBowl = Weight;
-            WeightTimeWater = Time;
-            UnderLimitWater = Limit;
-            RFIDValueWaterBowl = RFID;
-            WaterBowlName = Name;
-            WaterBowlSSID = SSID;
-            WaterBowlMAC = MAC;
-            ProductID = productID;
+
         }
 
-        public bool AddWaterBowelMeasurement()
+        public WaterBowl(int ProductID, int UserID, string Identifier, int MeasurementID, DateTime Time, int RFIDValue, float WeightValue) : base(ProductID, UserID, Identifier, MeasurementID, Time)
         {
-            return false;
+            RFID = RFIDValue;
+            Weight = WeightValue;
         }
 
-        public WaterBowl GetWaterBowlMeasurement()
+        public WaterBowl GetMeasurement(WaterBowl waterBowl)
         {
-            WaterBowl waterBowl = new WaterBowl(0, 0, DateTime.Now, false, 0, "Name", "SSID", "MAC", 0);
-            return waterBowl;
-        }
-        public List<WaterBowl> GetAllWaterBowlMeasurements()
-        {
-            List<WaterBowl> WaterBowls = new List<WaterBowl>();
-            return WaterBowls;
+            bool? Exists = WaterBowlDAL.MeasurementsExists(waterBowl.ProductID, waterBowl.UserID);
+            if (Exists == true)
+            {
+                try
+                {
+                    return WaterBowlDAL.GetMeasurement(waterBowl.ProductID, waterBowl.UserID);
+                }
+                catch (SqlException) //sql error bij verkrijgen van measurement
+                {
+                    throw new DivideByZeroException();
+                }
+            }
+            if (Exists == null) // sql error bij het kijken of de het product bestaat
+            {
+                throw new DivideByZeroException();
+            }
+            else  // er staan geen measurements voor het specifieke product in de database
+            {
+                throw new ArgumentNullException();
+            }
         }
 
-        public bool DeleteAllWaterBowlMeasurements()
+        public List<WaterBowl> GetAllMeasurements(WaterBowl waterBowl)
         {
-            return false;
+            bool? Exists = WaterBowlDAL.MeasurementsExists(waterBowl.ProductID, waterBowl.UserID);
+            if (Exists == true)
+            {
+                try
+                {
+                    return WaterBowlDAL.GetAllMeasurement(waterBowl.ProductID, waterBowl.UserID);
+                }
+                catch (SqlException) //sql error bij verkrijgen alle measurements
+                {
+                    throw new DivideByZeroException();
+                }
+            }
+            if (Exists == null) // sql error bij het kijken of de het product bestaat
+            {
+                throw new DivideByZeroException();
+            }
+            else // er staan geen measurements voor het specifieke product in de database
+            {
+                throw new ArgumentNullException();
+            }
+
+        }
+
+        public void AddMeasurement(WaterBowl waterBowl)
+        {
+            try
+            {
+                Product Feeder = GetProductIDAndUserID(waterBowl.UniqueIdentifier);
+                waterBowl.ProductID = Feeder.ProductID;
+                waterBowl.UserID = Feeder.UserID;
+                waterBowl.Time = DateTime.Now;
+
+                int FailureCount = 0;
+                while (true)
+                {
+                    try
+                    {
+                        if (FailureCount >= 20)
+                        {
+                            throw new DivideByZeroException();
+                        }
+                        WaterBowlDAL.AddMeasurement(waterBowl);
+                        break;
+                    }
+                    catch (DivideByZeroException)
+                    {
+                        FailureCount++;
+                        continue;
+                    }
+                }
+            }
+            catch (DivideByZeroException) //sql error, komt van verkrijgen user ID en product ID of van toevoegen measurement aan database
+            {
+                throw;
+            }
+            catch (ArgumentNullException) //product niet in database bij verkrijgen user id en product id
+            {
+                throw;
+            }
+        }
+
+        public void DeleteAllMeasurements(WaterBowl waterBowl)
+        {
+            bool? Exists = WaterBowlDAL.MeasurementsExists(waterBowl.ProductID, waterBowl.UserID);
+            if (Exists == true)
+            {
+                try
+                {
+                    WaterBowlDAL.DeleteAllMeasurements(waterBowl.ProductID, waterBowl.UserID);
+                }
+                catch (SqlException) // sql error bij het verwijderen van alle measurements
+                {
+                    throw new DivideByZeroException();
+                }
+            }
+            if (Exists == null) // sql error bij het kijken of de het product bestaat
+            {
+                throw new DivideByZeroException();
+            }
+            else // er staan geen measurements voor het specifieke product in de database
+            {
+                throw new ArgumentNullException();
+            }
         }
     }
 }
