@@ -76,7 +76,7 @@ namespace WebAPIHuisdierMonitor.DAL
             catch (SqlException)
             {
                 conn.Close();
-                throw;
+                throw new DivideByZeroException();
             }
         }
 
@@ -111,7 +111,7 @@ namespace WebAPIHuisdierMonitor.DAL
             catch (SqlException)
             {
                 conn.Close();
-                throw;
+                throw new DivideByZeroException();
             }
         }
 
@@ -134,7 +134,7 @@ namespace WebAPIHuisdierMonitor.DAL
             catch (SqlException)
             {
                 conn.Close();
-                throw new DivideByZeroException();
+                throw new AccessViolationException();
             }
         }
 

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Data.Sql;
 using WebAPIHuisdierMonitor.DAL;
 using System.Data.SqlClient;
 
@@ -33,9 +32,9 @@ namespace WebAPIHuisdierMonitor.Model
                 {
                     return FoodBowlDAL.GetMeasurement(foodBowl.ProductID, foodBowl.UserID);
                 }
-                catch (SqlException) //sql error bij verkrijgen van measurement
+                catch (DivideByZeroException) //sql error bij verkrijgen van measurement
                 {
-                    throw new DivideByZeroException();
+                    throw;
                 }
             }
             if (Exists == null) // sql error bij het kijken of de het product bestaat
@@ -57,9 +56,9 @@ namespace WebAPIHuisdierMonitor.Model
                 {
                     return FoodBowlDAL.GetAllMeasurement(foodBowl.ProductID, foodBowl.UserID);
                 }
-                catch (SqlException) //sql error bij verkrijgen alle measurements
+                catch (DivideByZeroException) //sql error bij verkrijgen alle measurements
                 {
-                    throw new DivideByZeroException();
+                    throw;
                 }
             }
             if (Exists == null) // sql error bij het kijken of de het product bestaat
@@ -93,7 +92,7 @@ namespace WebAPIHuisdierMonitor.Model
                         FoodBowlDAL.AddMeasurement(foodBowl);
                         break;
                     }
-                    catch (DivideByZeroException)
+                    catch (AccessViolationException)
                     {
                         FailureCount++;
                         continue;
@@ -119,9 +118,9 @@ namespace WebAPIHuisdierMonitor.Model
                 {
                     FoodBowlDAL.DeleteAllMeasurements(foodBowl.ProductID, foodBowl.UserID);
                 }
-                catch (SqlException) // sql error bij het verwijderen van alle measurements
+                catch (DivideByZeroException) // sql error bij het verwijderen van alle measurements
                 {
-                    throw new DivideByZeroException();
+                    throw;
                 }
             }
             if (Exists == null) // sql error bij het kijken of de het product bestaat

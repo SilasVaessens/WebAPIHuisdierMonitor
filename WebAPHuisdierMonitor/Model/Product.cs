@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Data.SqlClient;
 using WebAPIHuisdierMonitor.DAL;
 
 namespace WebAPIHuisdierMonitor.Model
@@ -51,9 +50,9 @@ namespace WebAPIHuisdierMonitor.Model
                 {
                     ProductDAL.DeleteProduct(product.ProductID);
                 }
-                catch (SqlException) //als er iets misgaat in de database
+                catch (DivideByZeroException) //als er iets misgaat in de database
                 {
-                    throw new DivideByZeroException();
+                    throw;
                 }
             }
             if (Exists == null)
@@ -75,9 +74,9 @@ namespace WebAPIHuisdierMonitor.Model
                 {
                     return ProductDAL.GetAllProducts(UniqueIdentifier);
                 }
-                catch (SqlException) //als er iets misgaat in de database
+                catch (DivideByZeroException) //als er iets misgaat in de database
                 {
-                    throw new DivideByZeroException();
+                    throw;
                 }
             }
             if (Exists == null)
@@ -100,9 +99,9 @@ namespace WebAPIHuisdierMonitor.Model
                 {
                     ProductDAL.UpdateProduct(product.UserID, product.Name, product.ProductID);
                 }
-                catch (SqlException) //als er iets misgaat in de database
+                catch (DivideByZeroException) //als er iets misgaat in de database
                 {
-                    throw new DivideByZeroException();
+                    throw;
                 }
             }
             if (Exists == null)
@@ -131,7 +130,7 @@ namespace WebAPIHuisdierMonitor.Model
                         }
                         return ProductDAL.GetProductIDAndUserID(UniqueIdentifier); ;
                     }
-                    catch (SqlException) //sql error bij het verkrijgen van user ID en product ID
+                    catch (AccessViolationException) //sql error bij het verkrijgen van user ID en product ID
                     {
                         FailureCount++;
                         continue;

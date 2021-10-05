@@ -30,14 +30,13 @@ namespace WebAPIHuisdierMonitor.DAL
                     product.ProductID = (int)reader["ProductID"];
                     product.UserID = (int)reader["UserID"];
                 }
+                conn.Close();
                 if (product.ProductID == ProductID && product.UserID == UserID)
                 {
-                    conn.Close();
                     return true;
                 }
                 else
                 {
-                    conn.Close();
                     return false;
                 }
             }
@@ -97,11 +96,11 @@ namespace WebAPIHuisdierMonitor.DAL
             catch (SqlException)
             {
                 conn.Close();
-                throw;
+                throw new DivideByZeroException();
             }
         }
         
-        public static List<Product> GetAllProducts(string UniqueIdentifier)
+        public static List<Product> GetAllProducts(string UniqueIdentifier) //gaat niet werken, moet nog aanpassen
         {
             List<Product> Products = new List<Product>();
             using SqlCommand cmd = new SqlCommand(ConnString);
@@ -129,7 +128,7 @@ namespace WebAPIHuisdierMonitor.DAL
             catch (SqlException)
             {
                 conn.Close();
-                throw;
+                throw new DivideByZeroException();
             }
         }
 
@@ -150,7 +149,7 @@ namespace WebAPIHuisdierMonitor.DAL
             catch (SqlException)
             {
                 conn.Close();
-                throw;
+                throw new DivideByZeroException();
             }
         }
 
@@ -176,7 +175,7 @@ namespace WebAPIHuisdierMonitor.DAL
             catch (SqlException)
             {
                 conn.Close();
-                throw;
+                throw new AccessViolationException();
             }
         }
     }
