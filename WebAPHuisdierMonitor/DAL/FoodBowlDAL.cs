@@ -8,7 +8,7 @@ using WebAPIHuisdierMonitor.Model;
 
 namespace WebAPIHuisdierMonitor.DAL
 {
-    public static class FoodBowlDAL
+    public static class FoodBowlDAL //test
     {
         private readonly static string ConnString = "";
         private readonly static SqlConnection conn = new SqlConnection(ConnString);
