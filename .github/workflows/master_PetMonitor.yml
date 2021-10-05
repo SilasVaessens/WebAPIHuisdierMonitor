@@ -38,7 +38,7 @@ jobs:
     runs-on: windows-latest
     needs: build
     environment:
-      name: 'production'
+      name: 'Production'
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
 
     steps:
@@ -52,6 +52,6 @@ jobs:
         uses: azure/webapps-deploy@v2
         with:
           app-name: 'PetMonitor'
-          slot-name: 'production'
-          publish-profile: ${{ secrets.AzureAppService_PublishProfile_6bc4122be14b4b7a86ec5c9e89865aa2 }}
+          slot-name: 'Production'
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_11EA6C80F4B34485B1442E00A59A01F2 }}
           package: .
