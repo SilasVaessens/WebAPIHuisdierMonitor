@@ -26,7 +26,7 @@ namespace WebAPIHuisdierMonitor.Model
 
         public void AddUser(User user)
         {
-            bool? Exists = UserDAL.UserExists(user.UserID);
+            bool? Exists = UserDAL.UserExists(user.UserName);
             if (Exists == false)
             {
                 try
@@ -42,7 +42,7 @@ namespace WebAPIHuisdierMonitor.Model
             {
                 throw new DivideByZeroException();
             }
-            else
+            if (Exists == true)
             {
                 throw new ArgumentNullException();
             }
@@ -73,7 +73,7 @@ namespace WebAPIHuisdierMonitor.Model
             {
                 throw new DivideByZeroException(); //sql error
             }
-            else
+            if (Exists == false)
             {
                 throw new ArgumentNullException(); // ID staat niet in database
             }

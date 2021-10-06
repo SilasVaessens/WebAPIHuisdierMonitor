@@ -9,7 +9,7 @@ namespace WebAPIHuisdierMonitor.DAL
 {
     public static class AutoFeederDAL
     {
-        private readonly static string ConnString = "";
+        private readonly static string ConnString = "Data Source=LAPTOP-4NFCKE65;Initial Catalog=PetMonitorDB;Integrated Security=True";
         private readonly static SqlConnection conn = new SqlConnection(ConnString);
 
         public static bool? MeasurementsExists(int ProductID, int UserID)
@@ -51,7 +51,7 @@ namespace WebAPIHuisdierMonitor.DAL
             AutoFeeder autoFeeder = new AutoFeeder();
             using SqlCommand cmd = new SqlCommand(ConnString);
             cmd.Connection = conn;
-            cmd.CommandText = "SELECT * FROM AutoFeeders WHERE MeasurementID=(SELECT max(MeasurementID) FROM AutoFeeders WHERE ProductID == @ProductID AND UserID == @UserID";
+            cmd.CommandText = "SELECT * FROM AutoFeeders WHERE MeasurementID=(SELECT max(MeasurementID) FROM AutoFeeders WHERE ProductID == @ProductID AND UserID == @UserID)";
             cmd.Parameters.AddWithValue("@ProductID", ProductID);
             cmd.Parameters.AddWithValue("@UserID", UserID);
             try

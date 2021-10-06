@@ -60,9 +60,10 @@ namespace WebAPIHuisdierMonitor.Controllers
         {
             try
             {
-                if (StaticUser.ValidateLogIn(user.UserName, user.PassWordHash) != 0)
+                int UserID = StaticUser.ValidateLogIn(user.UserName, user.PassWordHash);
+                if (UserID != 0)
                 {
-                    return Ok();
+                    return Ok(UserID);
                 }
                 else
                 {

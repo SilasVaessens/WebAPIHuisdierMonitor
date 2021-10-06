@@ -40,7 +40,7 @@ namespace WebAPIHuisdierMonitor.Controllers
         {
             try
             {
-                return Ok(StaticProduct.GetAllProducts(product.UniqueIdentifier));
+                return Ok(StaticProduct.GetAllProducts(product.UserID));
             }
             catch (SqlException) //ging iets mis in de database
             {

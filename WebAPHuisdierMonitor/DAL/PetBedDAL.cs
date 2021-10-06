@@ -9,7 +9,7 @@ namespace WebAPIHuisdierMonitor.DAL
 {
     public static class PetBedDAL
     {
-        private readonly static string ConnString = "";
+        private readonly static string ConnString = "Data Source=LAPTOP-4NFCKE65;Initial Catalog=PetMonitorDB;Integrated Security=True";
         private readonly static SqlConnection conn = new SqlConnection(ConnString);
 
         public static bool? MeasurementsExists(int ProductID, int UserID)
@@ -17,7 +17,7 @@ namespace WebAPIHuisdierMonitor.DAL
             List<int> ExistingMeasurements = new List<int>();
             using SqlCommand cmd = new SqlCommand(ConnString);
             cmd.Connection = conn;
-            cmd.CommandText = "SELECT FROM PetBed WHERE EXISTS (SELECT * FROM PetBed WHERE ProductID = @ProductID AND UserID = @UserID)";
+            cmd.CommandText = "SELECT FROM PetBeds WHERE EXISTS (SELECT * FROM PetBeds WHERE ProductID = @ProductID AND UserID = @UserID)";
             cmd.Parameters.AddWithValue("@ProductID", ProductID);
             cmd.Parameters.AddWithValue("@UserID", UserID);
             try
@@ -51,7 +51,7 @@ namespace WebAPIHuisdierMonitor.DAL
             PetBed petBed = new PetBed();
             using SqlCommand cmd = new SqlCommand(ConnString);
             cmd.Connection = conn;
-            cmd.CommandText = "SELECT * FROM PetBed WHERE MeasurementID=(SELECT max(MeasurementID) FROM PetBed WHERE ProductID == @ProductID AND UserID == @UserID";
+            cmd.CommandText = "SELECT * FROM PetBeds WHERE MeasurementID=(SELECT max(MeasurementID) FROM PetBeds WHERE ProductID = @ProductID AND UserID = @UserID)";
             cmd.Parameters.AddWithValue("@ProductID", ProductID);
             cmd.Parameters.AddWithValue("@UserID", UserID);
             try
@@ -85,7 +85,7 @@ namespace WebAPIHuisdierMonitor.DAL
             List<PetBed> PetBeds = new List<PetBed>();
             using SqlCommand cmd = new SqlCommand(ConnString);
             cmd.Connection = conn;
-            cmd.CommandText = "SELECT * FROM PetBed WHERE ProductID = @ProductID AND UserID = @UserID";
+            cmd.CommandText = "SELECT * FROM PetBeds WHERE ProductID = @ProductID AND UserID = @UserID";
             cmd.Parameters.AddWithValue("@ProductID", ProductID);
             cmd.Parameters.AddWithValue("@UserID", UserID);
             try
@@ -119,7 +119,7 @@ namespace WebAPIHuisdierMonitor.DAL
         {
             using SqlCommand cmd = new SqlCommand(ConnString);
             cmd.Connection = conn;
-            cmd.CommandText = "INSERT INTO PetBed VALUES (@ProductID, @UserID, @Time, @RFID, @Weight)";
+            cmd.CommandText = "INSERT INTO PetBeds VALUES (@ProductID, @UserID, @Time, @RFID, @Weight)";
             cmd.Parameters.AddWithValue("@ProductID", petBed.ProductID);
             cmd.Parameters.AddWithValue("@UserID", petBed.UserID);
             cmd.Parameters.AddWithValue("@Time", petBed.Time);
@@ -142,7 +142,7 @@ namespace WebAPIHuisdierMonitor.DAL
         {
             using SqlCommand cmd = new SqlCommand(ConnString);
             cmd.Connection = conn;
-            cmd.CommandText = "DELETE FROM PetBed WHERE ProductID = @ProductID AND UserID = @UserID";
+            cmd.CommandText = "DELETE FROM PetBeds WHERE ProductID = @ProductID AND UserID = @UserID";
             cmd.Parameters.AddWithValue("@ProductID", ProductID);
             cmd.Parameters.AddWithValue("@UserID", UserID);
             try

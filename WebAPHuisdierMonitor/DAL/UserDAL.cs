@@ -9,7 +9,7 @@ namespace WebAPIHuisdierMonitor.DAL
 {
     public static class UserDAL
     {
-        private readonly static string ConnString = "";
+        private readonly static string ConnString = "Data Source=LAPTOP-4NFCKE65;Initial Catalog=PetMonitorDB;Integrated Security=True";
         private readonly static SqlConnection conn = new SqlConnection(ConnString);
 
 
@@ -30,6 +30,37 @@ namespace WebAPIHuisdierMonitor.DAL
                 }
                 conn.Close();
                 if (ID == UserID)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            catch (SqlException)
+            {
+                conn.Close();
+                return null;
+            }
+        }
+        public static bool? UserExists(string UserName)
+        {
+            string userName = "";
+            using SqlCommand cmd = new SqlCommand(ConnString);
+            cmd.Connection = conn;
+            cmd.CommandText = "SELECT * FROM Users WHERE EXISTS (SELECT * FROM Users WHERE UserName = @UserName)";
+            cmd.Parameters.AddWithValue("@UserName", UserName);
+            try
+            {
+                conn.Open();
+                using SqlDataReader reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                    userName = (string)reader["UserID"];
+                }
+                conn.Close();
+                if (userName == UserName)
                 {
                     return true;
                 }

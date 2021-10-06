@@ -9,7 +9,7 @@ namespace WebAPIHuisdierMonitor.DAL
 {
     public static class WaterBowlDAL
     {
-        private readonly static string ConnString = "";
+        private readonly static string ConnString = "Data Source=LAPTOP-4NFCKE65;Initial Catalog=PetMonitorDB;Integrated Security=True";
         private readonly static SqlConnection conn = new SqlConnection(ConnString);
 
         public static bool? MeasurementsExists(int ProductID, int UserID)
@@ -17,7 +17,7 @@ namespace WebAPIHuisdierMonitor.DAL
             List<int> ExistingMeasurements = new List<int>();
             using SqlCommand cmd = new SqlCommand(ConnString);
             cmd.Connection = conn;
-            cmd.CommandText = "SELECT FROM WaterBowl WHERE EXISTS (SELECT * FROM WaterBowl WHERE ProductID = @ProductID AND UserID = @UserID)";
+            cmd.CommandText = "SELECT FROM WaterBowls WHERE EXISTS (SELECT * FROM WaterBowls WHERE ProductID = @ProductID AND UserID = @UserID)";
             cmd.Parameters.AddWithValue("@ProductID", ProductID);
             cmd.Parameters.AddWithValue("@UserID", UserID);
             try
@@ -51,7 +51,7 @@ namespace WebAPIHuisdierMonitor.DAL
             WaterBowl waterBowl = new WaterBowl();
             using SqlCommand cmd = new SqlCommand(ConnString);
             cmd.Connection = conn;
-            cmd.CommandText = "SELECT * FROM WaterBowl WHERE MeasurementID=(SELECT max(MeasurementID) FROM WaterBowl WHERE ProductID == @ProductID AND UserID == @UserID";
+            cmd.CommandText = "SELECT * FROM WaterBowls WHERE MeasurementID=(SELECT max(MeasurementID) FROM WaterBowls WHERE ProductID == @ProductID AND UserID == @UserID)";
             cmd.Parameters.AddWithValue("@ProductID", ProductID);
             cmd.Parameters.AddWithValue("@UserID", UserID);
             try
@@ -85,7 +85,7 @@ namespace WebAPIHuisdierMonitor.DAL
             List<WaterBowl> WaterBowls = new List<WaterBowl>();
             using SqlCommand cmd = new SqlCommand(ConnString);
             cmd.Connection = conn;
-            cmd.CommandText = "SELECT * FROM WaterBowl WHERE ProductID = @ProductID AND UserID = @UserID";
+            cmd.CommandText = "SELECT * FROM WaterBowls WHERE ProductID = @ProductID AND UserID = @UserID";
             cmd.Parameters.AddWithValue("@ProductID", ProductID);
             cmd.Parameters.AddWithValue("@UserID", UserID);
             try
@@ -96,9 +96,9 @@ namespace WebAPIHuisdierMonitor.DAL
                 {
                     WaterBowl waterBowl = new WaterBowl
                     {
-                        MeasurementID = (int)reader["MeasurementID"],
                         ProductID = (int)reader["ProductID"],
                         UserID = (int)reader["UserID"],
+                        MeasurementID = (int)reader["MeasurementID"],
                         Time = (DateTime)reader["Time"],
                         RFID = (int)reader["RFID"],
                         Weight = (float)reader["Weight"]
@@ -119,7 +119,7 @@ namespace WebAPIHuisdierMonitor.DAL
         {
             using SqlCommand cmd = new SqlCommand(ConnString);
             cmd.Connection = conn;
-            cmd.CommandText = "INSERT INTO WaterBowl VALUES (@ProductID, @UserID, @Time, @RFID, @Weight)";
+            cmd.CommandText = "INSERT INTO WaterBowls VALUES (@ProductID, @UserID, @Time, @RFID, @Weight)";
             cmd.Parameters.AddWithValue("@ProductID", waterBowl.ProductID);
             cmd.Parameters.AddWithValue("@UserID", waterBowl.UserID);
             cmd.Parameters.AddWithValue("@Time", waterBowl.Time);
@@ -142,7 +142,7 @@ namespace WebAPIHuisdierMonitor.DAL
         {
             using SqlCommand cmd = new SqlCommand(ConnString);
             cmd.Connection = conn;
-            cmd.CommandText = "DELETE FROM WaterBowl WHERE ProductID = @ProductID AND UserID = @UserID";
+            cmd.CommandText = "DELETE FROM WaterBowls WHERE ProductID = @ProductID AND UserID = @UserID";
             cmd.Parameters.AddWithValue("@ProductID", ProductID);
             cmd.Parameters.AddWithValue("@UserID", UserID);
             try

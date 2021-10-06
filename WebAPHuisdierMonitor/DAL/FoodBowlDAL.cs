@@ -10,7 +10,7 @@ namespace WebAPIHuisdierMonitor.DAL
 {
     public static class FoodBowlDAL //test
     {
-        private readonly static string ConnString = "";
+        private readonly static string ConnString = "Data Source=LAPTOP-4NFCKE65;Initial Catalog=PetMonitorDB;Integrated Security=True";
         private readonly static SqlConnection conn = new SqlConnection(ConnString);
 
         public static bool? MeasurementsExists(int ProductID, int UserID)
@@ -18,7 +18,7 @@ namespace WebAPIHuisdierMonitor.DAL
             List<int> ExistingMeasurements = new List<int>();
             using SqlCommand cmd = new SqlCommand(ConnString);
             cmd.Connection = conn;
-            cmd.CommandText = "SELECT FROM FoodBowl WHERE EXISTS (SELECT * FROM FoodBowl WHERE ProductID = @ProductID AND UserID = @UserID)";
+            cmd.CommandText = "SELECT FROM FoodBowls WHERE EXISTS (SELECT * FROM FoodBowls WHERE ProductID = @ProductID AND UserID = @UserID)";
             cmd.Parameters.AddWithValue("@ProductID", ProductID);
             cmd.Parameters.AddWithValue("@UserID", UserID);
             try
@@ -52,7 +52,7 @@ namespace WebAPIHuisdierMonitor.DAL
             FoodBowl foodBowl = new FoodBowl();
             using SqlCommand cmd = new SqlCommand(ConnString);
             cmd.Connection = conn;
-            cmd.CommandText = "SELECT * FROM FoodBowl WHERE MeasurementID=(SELECT max(MeasurementID) FROM FoodBowl WHERE ProductID == @ProductID AND UserID == @UserID";
+            cmd.CommandText = "SELECT * FROM FoodBowls WHERE MeasurementID=(SELECT max(MeasurementID) FROM FoodBowls WHERE ProductID == @ProductID AND UserID == @UserID)";
             cmd.Parameters.AddWithValue("@ProductID", ProductID);
             cmd.Parameters.AddWithValue("@UserID", UserID);
             try
@@ -86,7 +86,7 @@ namespace WebAPIHuisdierMonitor.DAL
             List<FoodBowl> FoodBowls = new List<FoodBowl>();
             using SqlCommand cmd = new SqlCommand(ConnString);
             cmd.Connection = conn;
-            cmd.CommandText = "SELECT * FROM FoodBowl WHERE ProductID = @ProductID AND UserID = @UserID";
+            cmd.CommandText = "SELECT * FROM FoodBowls WHERE ProductID = @ProductID AND UserID = @UserID";
             cmd.Parameters.AddWithValue("@ProductID", ProductID);
             cmd.Parameters.AddWithValue("@UserID", UserID);
             try
@@ -120,7 +120,7 @@ namespace WebAPIHuisdierMonitor.DAL
         {
             using SqlCommand cmd = new SqlCommand(ConnString);
             cmd.Connection = conn;
-            cmd.CommandText = "INSERT INTO FoodBowl VALUES (@ProductID, @UserID, @Time, @RFID, @Weight)";
+            cmd.CommandText = "INSERT INTO FoodBowls VALUES (@ProductID, @UserID, @Time, @RFID, @Weight)";
             cmd.Parameters.AddWithValue("@ProductID", foodBowl.ProductID);
             cmd.Parameters.AddWithValue("@UserID", foodBowl.UserID);
             cmd.Parameters.AddWithValue("@Time", foodBowl.Time);
@@ -143,7 +143,7 @@ namespace WebAPIHuisdierMonitor.DAL
         {
             using SqlCommand cmd = new SqlCommand(ConnString);
             cmd.Connection = conn;
-            cmd.CommandText = "DELETE FROM FoodBowl WHERE ProductID = @ProductID AND UserID = @UserID";
+            cmd.CommandText = "DELETE FROM FoodBowls WHERE ProductID = @ProductID AND UserID = @UserID";
             cmd.Parameters.AddWithValue("@ProductID", ProductID);
             cmd.Parameters.AddWithValue("@UserID", UserID);
             try

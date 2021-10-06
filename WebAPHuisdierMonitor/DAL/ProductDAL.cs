@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using WebAPIHuisdierMonitor.Model;
@@ -10,7 +11,7 @@ namespace WebAPIHuisdierMonitor.DAL
 {
     public static class ProductDAL
     {
-        private readonly static string ConnString = ""; 
+        private readonly static string ConnString = "Data Source=LAPTOP-4NFCKE65;Initial Catalog=PetMonitorDB;Integrated Security=True"; 
         private readonly static SqlConnection conn = new SqlConnection(ConnString);
 
         public static bool? ProductExists(int ProductID, int UserID)
@@ -18,7 +19,7 @@ namespace WebAPIHuisdierMonitor.DAL
             Product product = new Product();
             using SqlCommand cmd = new SqlCommand(ConnString);
             cmd.Connection = conn;
-            cmd.CommandText = "SELECT * FROM Products WHERE EXISTS (SELECT * FROM Products WHERE ProductID = @ProductID AND UserID = @UserID";
+            cmd.CommandText = "SELECT * FROM Products WHERE EXISTS (SELECT * FROM Products WHERE ProductID = @ProductID AND UserID = @UserID)";
             cmd.Parameters.AddWithValue("@ProductID", ProductID);
             cmd.Parameters.AddWithValue("@UserID", UserID);
             try
@@ -52,7 +53,7 @@ namespace WebAPIHuisdierMonitor.DAL
             Product product = new Product();
             using SqlCommand cmd = new SqlCommand(ConnString);
             cmd.Connection = conn;
-            cmd.CommandText = "SELECT * FROM Products WHERE EXISTS (SELECT * FROM Products WHERE UniqueIdentifier = @UniqueIdentifier";
+            cmd.CommandText = "SELECT * FROM Products WHERE EXISTS (SELECT * FROM Products WHERE UniqueIdentifier = @UniqueIdentifier)";
             cmd.Parameters.AddWithValue("@UniqueIdentifier", UniqueIdentifier);
             try
             {
@@ -78,8 +79,43 @@ namespace WebAPIHuisdierMonitor.DAL
                 conn.Close();
                 return null;
             }
+        }
+
+        public static bool? ProductExists(int UserID)
+        {
+            List<int> IDs = new List<int>();
+            using SqlCommand cmd = new SqlCommand(ConnString);
+            cmd.Connection = conn;
+            cmd.CommandText = "SELECT * FROM Products WHERE EXISTS (SELECT * FROM Products WHERE UserID = @UserID)";
+            cmd.Parameters.AddWithValue("@UserID", UserID);
+            try
+            {
+                conn.Open();
+                using SqlDataReader reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                    int ID = (int)reader["UserID"];
+                    IDs.Add(ID);
+                }
+                if (IDs.Count > 0)
+                {
+                    conn.Close();
+                    return true;
+                }
+                else
+                {
+                    conn.Close();
+                    return false;
+                }
+            }
+            catch (SqlException e)
+            {
+                conn.Close();
+                return null;
+            }
 
         }
+
 
         public static void DeleteProduct(int ProductID)
         {
@@ -100,13 +136,13 @@ namespace WebAPIHuisdierMonitor.DAL
             }
         }
         
-        public static List<Product> GetAllProducts(string UniqueIdentifier) //gaat niet werken, moet nog aanpassen
+        public static List<Product> GetAllProducts(int UserID) 
         {
             List<Product> Products = new List<Product>();
             using SqlCommand cmd = new SqlCommand(ConnString);
             cmd.Connection = conn;
-            cmd.CommandText = "SELECT * FROM Products WHERE UniqueIdentifier = @UniqueIdentifier";
-            cmd.Parameters.AddWithValue("@UniqueIdentifier", UniqueIdentifier);
+            cmd.CommandText = "SELECT * FROM Products WHERE UserID = @UserID";
+            cmd.Parameters.AddWithValue("@UserID", UserID);
             try
             {
                 conn.Open();
@@ -118,7 +154,8 @@ namespace WebAPIHuisdierMonitor.DAL
                         ProductID = (int)reader["ProductID"],
                         UserID = (int)reader["UserID"],
                         UniqueIdentifier = (string)reader["UniqueIdentifier"],
-                        Name = (string)reader["Name"]
+                        Name = (string)reader["Name"],
+                        Type = (string)reader["Type"]
                     };
                     Products.Add(product);
                 }

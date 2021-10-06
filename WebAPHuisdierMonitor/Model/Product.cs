@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using WebAPIHuisdierMonitor.DAL;
@@ -65,14 +66,14 @@ namespace WebAPIHuisdierMonitor.Model
             }
         }
 
-        public List<Product> GetAllProducts(string UniqueIdentifier)
+        public List<Product> GetAllProducts(int UserID)
         {
-            bool? Exists = ProductDAL.ProductExists(UniqueIdentifier); //controleer of user producten geregistreerd heeft staan
+            bool? Exists = ProductDAL.ProductExists(UserID); //controleer of user producten geregistreerd heeft staan
             if (Exists == true)
             {
                 try
                 {
-                    return ProductDAL.GetAllProducts(UniqueIdentifier);
+                    return ProductDAL.GetAllProducts(UserID);
                 }
                 catch (DivideByZeroException) //als er iets misgaat in de database
                 {
@@ -87,7 +88,6 @@ namespace WebAPIHuisdierMonitor.Model
             {
                 throw new ArgumentNullException(); // product niet in database
             }
-
         }
 
         public void UpdateProduct(Product product)
