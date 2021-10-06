@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using WebAPIHuisdierMonitor.Model;
@@ -17,7 +18,7 @@ namespace WebAPIHuisdierMonitor.DAL
             List<int> ExistingMeasurements = new List<int>();
             using SqlCommand cmd = new SqlCommand(ConnString);
             cmd.Connection = conn;
-            cmd.CommandText = "SELECT FROM WaterBowls WHERE EXISTS (SELECT * FROM WaterBowls WHERE ProductID = @ProductID AND UserID = @UserID)";
+            cmd.CommandText = "SELECT * FROM WaterBowls WHERE EXISTS (SELECT * FROM WaterBowls WHERE ProductID = @ProductID AND UserID = @UserID)";
             cmd.Parameters.AddWithValue("@ProductID", ProductID);
             cmd.Parameters.AddWithValue("@UserID", UserID);
             try
@@ -51,7 +52,7 @@ namespace WebAPIHuisdierMonitor.DAL
             WaterBowl waterBowl = new WaterBowl();
             using SqlCommand cmd = new SqlCommand(ConnString);
             cmd.Connection = conn;
-            cmd.CommandText = "SELECT * FROM WaterBowls WHERE MeasurementID=(SELECT max(MeasurementID) FROM WaterBowls WHERE ProductID == @ProductID AND UserID == @UserID)";
+            cmd.CommandText = "SELECT * FROM WaterBowls WHERE MeasurementID=(SELECT max(MeasurementID) FROM WaterBowls WHERE ProductID = @ProductID AND UserID = @UserID)";
             cmd.Parameters.AddWithValue("@ProductID", ProductID);
             cmd.Parameters.AddWithValue("@UserID", UserID);
             try
@@ -73,7 +74,7 @@ namespace WebAPIHuisdierMonitor.DAL
                 conn.Close();
                 return waterBowl;
             }
-            catch (SqlException)
+            catch (SqlException e)
             {
                 conn.Close();
                 throw new DivideByZeroException();

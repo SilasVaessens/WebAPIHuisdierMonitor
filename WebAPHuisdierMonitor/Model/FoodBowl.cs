@@ -127,7 +127,7 @@ namespace WebAPIHuisdierMonitor.Model
             {
                 throw new DivideByZeroException();
             }
-            else // er staan geen measurements voor het specifieke product in de database
+            if (Exists == false) // er staan geen measurements voor het specifieke product in de database
             {
                 throw new ArgumentNullException();
             }

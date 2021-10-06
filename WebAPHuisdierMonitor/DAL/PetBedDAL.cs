@@ -17,7 +17,7 @@ namespace WebAPIHuisdierMonitor.DAL
             List<int> ExistingMeasurements = new List<int>();
             using SqlCommand cmd = new SqlCommand(ConnString);
             cmd.Connection = conn;
-            cmd.CommandText = "SELECT FROM PetBeds WHERE EXISTS (SELECT * FROM PetBeds WHERE ProductID = @ProductID AND UserID = @UserID)";
+            cmd.CommandText = "SELECT * FROM PetBeds WHERE EXISTS (SELECT * FROM PetBeds WHERE ProductID = @ProductID AND UserID = @UserID)";
             cmd.Parameters.AddWithValue("@ProductID", ProductID);
             cmd.Parameters.AddWithValue("@UserID", UserID);
             try

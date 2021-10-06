@@ -48,12 +48,13 @@ namespace WebAPIHuisdierMonitor.DAL
             }
         }
 
+
         public static bool? ProductExists(string UniqueIdentifier)
         {
             Product product = new Product();
             using SqlCommand cmd = new SqlCommand(ConnString);
             cmd.Connection = conn;
-            cmd.CommandText = "SELECT * FROM Products WHERE EXISTS (SELECT * FROM Products WHERE UniqueIdentifier = @UniqueIdentifier)";
+            cmd.CommandText = "SELECT TOP 1 * FROM Products WHERE EXISTS (SELECT * FROM Products WHERE UniqueIdentifier = @UniqueIdentifier)";
             cmd.Parameters.AddWithValue("@UniqueIdentifier", UniqueIdentifier);
             try
             {
@@ -108,12 +109,32 @@ namespace WebAPIHuisdierMonitor.DAL
                     return false;
                 }
             }
-            catch (SqlException e)
+            catch (SqlException)
             {
                 conn.Close();
                 return null;
             }
 
+        }
+
+        public static void AddProduct(string UniqueIdentifer, string Type)
+        {
+            using SqlCommand cmd = new SqlCommand(ConnString);
+            cmd.Connection = conn;
+            cmd.CommandText = "INSERT INTO Products (UniqueIdentifier, Type) VALUES (@UniqueIdentifier, @Type)";
+            cmd.Parameters.AddWithValue("@UniqueIdentifier", UniqueIdentifer);
+            cmd.Parameters.AddWithValue("@Type", Type);
+            try
+            {
+                conn.Open();
+                cmd.ExecuteNonQuery();
+                conn.Close();
+            }
+            catch (SqlException)
+            {
+                conn.Close();
+                throw new DivideByZeroException();
+            }
         }
 
 

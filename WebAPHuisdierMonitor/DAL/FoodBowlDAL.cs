@@ -8,7 +8,7 @@ using WebAPIHuisdierMonitor.Model;
 
 namespace WebAPIHuisdierMonitor.DAL
 {
-    public static class FoodBowlDAL //test
+    public static class FoodBowlDAL
     {
         private readonly static string ConnString = "Data Source=LAPTOP-4NFCKE65;Initial Catalog=PetMonitorDB;Integrated Security=True";
         private readonly static SqlConnection conn = new SqlConnection(ConnString);
@@ -18,7 +18,7 @@ namespace WebAPIHuisdierMonitor.DAL
             List<int> ExistingMeasurements = new List<int>();
             using SqlCommand cmd = new SqlCommand(ConnString);
             cmd.Connection = conn;
-            cmd.CommandText = "SELECT FROM FoodBowls WHERE EXISTS (SELECT * FROM FoodBowls WHERE ProductID = @ProductID AND UserID = @UserID)";
+            cmd.CommandText = "SELECT * FROM FoodBowls WHERE EXISTS (SELECT * FROM FoodBowls WHERE ProductID = @ProductID AND UserID = @UserID)";
             cmd.Parameters.AddWithValue("@ProductID", ProductID);
             cmd.Parameters.AddWithValue("@UserID", UserID);
             try
@@ -52,7 +52,7 @@ namespace WebAPIHuisdierMonitor.DAL
             FoodBowl foodBowl = new FoodBowl();
             using SqlCommand cmd = new SqlCommand(ConnString);
             cmd.Connection = conn;
-            cmd.CommandText = "SELECT * FROM FoodBowls WHERE MeasurementID=(SELECT max(MeasurementID) FROM FoodBowls WHERE ProductID == @ProductID AND UserID == @UserID)";
+            cmd.CommandText = "SELECT * FROM FoodBowls WHERE MeasurementID=(SELECT max(MeasurementID) FROM FoodBowls WHERE ProductID = @ProductID AND UserID = @UserID)";
             cmd.Parameters.AddWithValue("@ProductID", ProductID);
             cmd.Parameters.AddWithValue("@UserID", UserID);
             try

@@ -42,14 +42,38 @@ namespace WebAPIHuisdierMonitor.Model
             Time = MeasurementTime;
         }
 
-        public void DeleteProduct(Product product)
+        public void AddProduct(string UniqueIdentider, string Type)
         {
-            bool? Exists = ProductDAL.ProductExists(product.UserID, product.ProductID); //controleer of specifiek product bestaat
+            bool? Exists = ProductDAL.ProductExists(UniqueIdentider);
+            if (Exists == false)
+            {
+                try
+                {
+                    ProductDAL.AddProduct(UniqueIdentider, Type);
+                }
+                catch (DivideByZeroException)
+                {
+                    throw;
+                }
+            }
+            if (Exists == null)
+            {
+                throw new DivideByZeroException();
+            }
+            if (Exists == true)
+            {
+                throw new ArgumentNullException();
+            }
+        }
+
+        public void DeleteProduct(int ProductID, int UserID)
+        {
+            bool? Exists = ProductDAL.ProductExists(ProductID, UserID); //controleer of specifiek product bestaat
             if (Exists == true)
             {
                 try
                 {
-                    ProductDAL.DeleteProduct(product.ProductID);
+                    ProductDAL.DeleteProduct(ProductID);
                 }
                 catch (DivideByZeroException) //als er iets misgaat in de database
                 {
@@ -60,7 +84,7 @@ namespace WebAPIHuisdierMonitor.Model
             {
                 throw new DivideByZeroException();
             }
-            else
+            if (Exists == false)
             {
                 throw new ArgumentNullException(); 
             }
@@ -92,7 +116,7 @@ namespace WebAPIHuisdierMonitor.Model
 
         public void UpdateProduct(Product product)
         {
-            bool? Exists = ProductDAL.ProductExists(product.UserID, product.ProductID); //controleer of specifiek product bestaat
+            bool? Exists = ProductDAL.ProductExists(product.ProductID, product.UserID); //controleer of specifiek product bestaat
             if (Exists == true)
             {
                 try
@@ -108,7 +132,7 @@ namespace WebAPIHuisdierMonitor.Model
             {
                 throw new DivideByZeroException();
             }
-            else
+            if (Exists == false)
             {
                 throw new ArgumentNullException();
             }

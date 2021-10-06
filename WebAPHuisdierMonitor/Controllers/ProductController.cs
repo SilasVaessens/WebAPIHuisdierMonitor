@@ -16,16 +16,33 @@ namespace WebAPIHuisdierMonitor.Controllers
     {
         private readonly static Product StaticProduct = new Product();
 
+        [HttpPost]
+        public IActionResult AddProduct([FromBody] Product product)
+        {
+            try
+            {
+                StaticProduct.AddProduct(product.UniqueIdentifier, product.Type);
+                return Ok();
+            }
+            catch (DivideByZeroException) //sql error
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+            catch (ArgumentNullException) //product staat al in database
+            {
+                return StatusCode(StatusCodes.Status409Conflict);
+            }
+        }
 
         [HttpDelete]
         public IActionResult DeleteProduct([FromBody] Product product)
         {
             try
             {
-                StaticProduct.DeleteProduct(product);
+                StaticProduct.DeleteProduct(product.ProductID, product.UserID);
                 return Ok();
             }
-            catch (SqlException) //ging iets mis in de database
+            catch (SqlException) //sql error
             {
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
