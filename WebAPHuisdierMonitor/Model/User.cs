@@ -91,5 +91,17 @@ namespace WebAPIHuisdierMonitor.Model
             }
 
         }
+
+        public User GetUser()
+        {
+            try
+            {
+                return UserDAL.GetUser();
+            }
+            catch (DivideByZeroException)
+            {
+                throw;
+            }
+        }
     }
 }

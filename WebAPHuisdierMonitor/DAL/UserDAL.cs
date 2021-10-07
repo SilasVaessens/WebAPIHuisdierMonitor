@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using WebAPIHuisdierMonitor.Model;
@@ -18,7 +19,7 @@ namespace WebAPIHuisdierMonitor.DAL
             int ID = new int();
             using SqlCommand cmd = new SqlCommand(ConnString);
             cmd.Connection = conn;
-            cmd.CommandText = "SELECT * FROM Users WHERE EXISTS (SELECT * FROM Users WHERE UserID = @UserID)";
+            cmd.CommandText = "SELECT * FROM Users WHERE UserID = @UserID";
             cmd.Parameters.AddWithValue("@UserID", UserID);
             try
             {
@@ -49,7 +50,7 @@ namespace WebAPIHuisdierMonitor.DAL
             string userName = "";
             using SqlCommand cmd = new SqlCommand(ConnString);
             cmd.Connection = conn;
-            cmd.CommandText = "SELECT * FROM Users WHERE EXISTS (SELECT * FROM Users WHERE UserName = @UserName)";
+            cmd.CommandText = "SELECT * FROM Users WHERE UserName = @UserName";
             cmd.Parameters.AddWithValue("@UserName", UserName);
             try
             {
@@ -57,7 +58,7 @@ namespace WebAPIHuisdierMonitor.DAL
                 using SqlDataReader reader = cmd.ExecuteReader();
                 while (reader.Read())
                 {
-                    userName = (string)reader["UserID"];
+                    userName = (string)reader["UserName"];
                 }
                 conn.Close();
                 if (userName == UserName)
@@ -69,8 +70,9 @@ namespace WebAPIHuisdierMonitor.DAL
                     return false;
                 }
             }
-            catch (SqlException)
+            catch (SqlException e)
             {
+                Debug.WriteLine(e);
                 conn.Close();
                 return null;
             }
@@ -93,6 +95,32 @@ namespace WebAPIHuisdierMonitor.DAL
             {
                 conn.Close();
                 throw new DivideByZeroException();
+            }
+        }
+
+        public static User GetUser()
+        {
+            User user = new User();
+            using SqlCommand cmd = new SqlCommand(ConnString);
+            cmd.Connection = conn;
+            cmd.CommandText = "SELECT * FROM Users WHERE UserID = (SELECT max(UserID) from Users)";
+            try
+            {
+                conn.Open();
+                using SqlDataReader reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                    user.UserID = (int)reader["UserID"];
+                    user.UserName = (string)reader["UserName"];
+                    user.PassWordHash = (string)reader["PassWordHash"];
+                }
+                conn.Close();
+                return user;
+            }
+            catch (SqlException)
+            {
+                conn.Close();
+                throw;
             }
         }
 
