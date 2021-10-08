@@ -54,7 +54,7 @@ namespace WebAPIHuisdierMonitor.DAL
             Product product = new Product();
             using SqlCommand cmd = new SqlCommand(ConnString);
             cmd.Connection = conn;
-            cmd.CommandText = "SELECT TOP 1 * FROM Products WHERE EXISTS (SELECT * FROM Products WHERE UniqueIdentifier = @UniqueIdentifier)";
+            cmd.CommandText = "SELECT * FROM Products WHERE UniqueIdentifier = @UniqueIdentifier";
             cmd.Parameters.AddWithValue("@UniqueIdentifier", UniqueIdentifier);
             try
             {
@@ -234,6 +234,11 @@ namespace WebAPIHuisdierMonitor.DAL
             {
                 conn.Close();
                 throw new AccessViolationException();
+            }
+            catch (InvalidCastException)
+            {
+                conn.Close();
+                throw;
             }
         }
     }

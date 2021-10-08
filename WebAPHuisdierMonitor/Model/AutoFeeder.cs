@@ -105,6 +105,10 @@ namespace WebAPIHuisdierMonitor.Model
             {
                 throw;
             }
+            catch (InvalidCastException)
+            {
+                throw;
+            }
         }
 
         public void DeleteAllMeasurements(AutoFeeder autoFeeder)

@@ -159,6 +159,10 @@ namespace WebAPIHuisdierMonitor.Model
                         FailureCount++;
                         continue;
                     }
+                    catch (InvalidCastException)
+                    {
+                        throw;
+                    }
                 }
             }
             if (Exist == null) //sql error bij checken of product bestaat

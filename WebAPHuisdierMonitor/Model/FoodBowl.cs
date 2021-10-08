@@ -97,6 +97,10 @@ namespace WebAPIHuisdierMonitor.Model
                         FailureCount++;
                         continue;
                     }
+                    catch (InvalidCastException)
+                    {
+                        throw;
+                    }
                 }
             }
             catch (DivideByZeroException) //sql error, komt van verkrijgen user ID en product ID of van toevoegen measurement aan database

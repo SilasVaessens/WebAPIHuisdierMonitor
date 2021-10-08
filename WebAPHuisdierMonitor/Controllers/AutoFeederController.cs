@@ -82,6 +82,10 @@ namespace WebAPIHuisdierMonitor.Controllers
             {
                 return StatusCode(StatusCodes.Status404NotFound);
             }
+            catch (InvalidCastException)
+            {
+                return StatusCode(StatusCodes.Status401Unauthorized);
+            }
         }
     }
 }
