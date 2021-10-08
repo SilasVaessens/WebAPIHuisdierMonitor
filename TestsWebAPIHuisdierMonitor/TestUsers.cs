@@ -30,7 +30,7 @@ namespace TestsWebAPIHuisdierMonitor
         [ExpectedException(typeof(ArgumentNullException))]
         public void DeleteUserNotExistingID()
         {
-            User WrongID = new User(99999, "UnitTestUser", "ThisShouldBeHashed");
+            User WrongID = new User(0, "UnitTestUser", "ThisShouldBeHashed");
             WrongID.DeleteUser(WrongID);
         }
 

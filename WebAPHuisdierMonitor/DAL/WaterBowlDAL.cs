@@ -74,7 +74,7 @@ namespace WebAPIHuisdierMonitor.DAL
                 conn.Close();
                 return waterBowl;
             }
-            catch (SqlException e)
+            catch (SqlException)
             {
                 conn.Close();
                 throw new DivideByZeroException();

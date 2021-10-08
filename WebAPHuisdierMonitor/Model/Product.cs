@@ -90,6 +90,18 @@ namespace WebAPIHuisdierMonitor.Model
             }
         }
 
+        public Product GetProduct()
+        {
+            try
+            {
+                return ProductDAL.GetProduct();
+            }
+            catch (DivideByZeroException)
+            {
+                throw;
+            }
+        }
+
         public List<Product> GetAllProducts(int UserID)
         {
             bool? Exists = ProductDAL.ProductExists(UserID); //controleer of user producten geregistreerd heeft staan
@@ -114,14 +126,14 @@ namespace WebAPIHuisdierMonitor.Model
             }
         }
 
-        public void UpdateProduct(Product product)
+        public void UpdateProduct(int ProductID, int UserID, string Name, string UniqueIdentifier)
         {
-            bool? Exists = ProductDAL.ProductExists(product.ProductID, product.UserID); //controleer of specifiek product bestaat
+            bool? Exists = ProductDAL.ProductExists(UniqueIdentifier); //controleer of specifiek product bestaat
             if (Exists == true)
             {
                 try
                 {
-                    ProductDAL.UpdateProduct(product.UserID, product.Name, product.ProductID);
+                    ProductDAL.UpdateProduct(UserID, Name, ProductID);
                 }
                 catch (DivideByZeroException) //als er iets misgaat in de database
                 {

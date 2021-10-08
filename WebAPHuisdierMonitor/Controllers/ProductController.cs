@@ -75,7 +75,7 @@ namespace WebAPIHuisdierMonitor.Controllers
         {
             try
             {
-                StaticProduct.UpdateProduct(product);
+                StaticProduct.UpdateProduct(product.ProductID, product.UserID, product.Name, product.UniqueIdentifier);
                 return Ok();
             }
             catch (SqlException) //ging iets mis in de database

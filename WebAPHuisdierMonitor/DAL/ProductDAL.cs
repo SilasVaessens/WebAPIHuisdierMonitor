@@ -19,7 +19,7 @@ namespace WebAPIHuisdierMonitor.DAL
             Product product = new Product();
             using SqlCommand cmd = new SqlCommand(ConnString);
             cmd.Connection = conn;
-            cmd.CommandText = "SELECT * FROM Products WHERE EXISTS (SELECT * FROM Products WHERE ProductID = @ProductID AND UserID = @UserID)";
+            cmd.CommandText = "SELECT * FROM Products WHERE ProductID = @ProductID AND UserID = @UserID";
             cmd.Parameters.AddWithValue("@ProductID", ProductID);
             cmd.Parameters.AddWithValue("@UserID", UserID);
             try
@@ -62,7 +62,7 @@ namespace WebAPIHuisdierMonitor.DAL
                 using SqlDataReader reader = cmd.ExecuteReader();
                 while (reader.Read())
                 {
-                    product.UniqueIdentifier = reader["UniqueIdentifier"].ToString();
+                    product.UniqueIdentifier = (string)reader["UniqueIdentifier"];
                 }
                 if (product.UniqueIdentifier == UniqueIdentifier)
                 {
@@ -82,12 +82,38 @@ namespace WebAPIHuisdierMonitor.DAL
             }
         }
 
+        public static Product GetProduct()
+        {
+            Product product = new Product();
+            using SqlCommand cmd = new SqlCommand(ConnString);
+            cmd.Connection = conn;
+            cmd.CommandText = "SELECT * FROM Products WHERE ProductID = (SELECT max(ProductID) from Products)";
+            try
+            {
+                conn.Open();
+                using SqlDataReader reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                    product.ProductID = (int)reader["ProductID"];
+                    product.UniqueIdentifier = (string)reader["UniqueIdentifier"];
+                    product.Type = (string)reader["Type"];   
+                }
+                conn.Close();
+                return product;
+            }
+            catch (SqlException)
+            {
+                conn.Close();
+                throw new DivideByZeroException();
+            }
+        }
+
         public static bool? ProductExists(int UserID)
         {
             List<int> IDs = new List<int>();
             using SqlCommand cmd = new SqlCommand(ConnString);
             cmd.Connection = conn;
-            cmd.CommandText = "SELECT * FROM Products WHERE EXISTS (SELECT * FROM Products WHERE UserID = @UserID)";
+            cmd.CommandText = "SELECT * FROM Products WHERE UserID = @UserID";
             cmd.Parameters.AddWithValue("@UserID", UserID);
             try
             {
@@ -204,8 +230,9 @@ namespace WebAPIHuisdierMonitor.DAL
                 cmd.ExecuteNonQuery();
                 conn.Close();
             }
-            catch (SqlException)
+            catch (SqlException e)
             {
+                Debug.WriteLine("Error : " + e);
                 conn.Close();
                 throw new DivideByZeroException();
             }
