@@ -18,7 +18,7 @@ namespace WebAPIHuisdierMonitor.DAL
             List<int> ExistingMeasurements = new List<int>();
             using SqlCommand cmd = new SqlCommand(ConnString);
             cmd.Connection = conn;
-            cmd.CommandText = "SELECT * FROM FoodBowls WHERE EXISTS (SELECT * FROM FoodBowls WHERE ProductID = @ProductID AND UserID = @UserID)";
+            cmd.CommandText = "SELECT * FROM FoodBowls WHERE ProductID = @ProductID AND UserID = @UserID";
             cmd.Parameters.AddWithValue("@ProductID", ProductID);
             cmd.Parameters.AddWithValue("@UserID", UserID);
             try
@@ -37,6 +37,7 @@ namespace WebAPIHuisdierMonitor.DAL
                 }
                 else
                 {
+                    conn.Close();
                     return false;
                 }
             }
@@ -97,9 +98,9 @@ namespace WebAPIHuisdierMonitor.DAL
                 {
                     FoodBowl foodBowl = new FoodBowl
                     {
-                        MeasurementID = (int)reader["MeasurementID"],
                         ProductID = (int)reader["ProductID"],
                         UserID = (int)reader["UserID"],
+                        MeasurementID = (int)reader["MeasurementID"],
                         Time = (DateTime)reader["Time"],
                         RFID = (int)reader["RFID"],
                         Weight = (float)reader["Weight"]

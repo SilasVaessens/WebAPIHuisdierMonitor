@@ -18,7 +18,7 @@ namespace WebAPIHuisdierMonitor.DAL
             List<int> ExistingMeasurements = new List<int>();
             using SqlCommand cmd = new SqlCommand(ConnString);
             cmd.Connection = conn;
-            cmd.CommandText = "SELECT * FROM WaterBowls WHERE EXISTS (SELECT * FROM WaterBowls WHERE ProductID = @ProductID AND UserID = @UserID)";
+            cmd.CommandText = "SELECT * FROM WaterBowls WHERE ProductID = @ProductID AND UserID = @UserID";
             cmd.Parameters.AddWithValue("@ProductID", ProductID);
             cmd.Parameters.AddWithValue("@UserID", UserID);
             try
@@ -37,6 +37,7 @@ namespace WebAPIHuisdierMonitor.DAL
                 }
                 else
                 {
+                    conn.Close();
                     return false;
                 }
             }

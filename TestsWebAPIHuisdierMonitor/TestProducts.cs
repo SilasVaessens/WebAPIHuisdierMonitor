@@ -7,7 +7,7 @@ using System.Collections.Generic;
 namespace TestsWebAPIHuisdierMonitor
 {
     [TestClass]
-    public class TestProduct
+    public class TestProducts
     {
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
