@@ -131,8 +131,48 @@ namespace TestsWebAPIHuisdierMonitor
             product2.DeleteProduct(product2.ProductID, user.UserID);
             product1.DeleteProduct(product1.ProductID, user.UserID);
             user.DeleteUser(user);
+        }
 
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void GetIDsWrongIdentifier()
+        {
+            Product product = new Product();
+            product.GetProductIDAndUserID("WrongIdentifier");
+        }
 
+        [TestMethod]
+        public void GetIDsNoUserID()
+        {
+            Product product = new Product(1, 0, "NoUserIdentifier", "Product", "AutoFeeder");
+            product.AddProduct(product.UniqueIdentifier, product.Type);
+            Product IDs = new Product();
+            try
+            {
+                IDs = product.GetProductIDAndUserID(product.UniqueIdentifier);
+                Assert.IsTrue(false);
+            }
+            catch (InvalidCastException)
+            {
+                IDs = product.GetProduct();
+                IDs.UpdateProduct(IDs.ProductID, 1, product.Name, IDs.UniqueIdentifier);
+                IDs.DeleteProduct(IDs.ProductID, 1);
+                Assert.IsTrue(true);
+            }
+        }
+
+        [TestMethod]
+        public void GetIDsSucces()
+        {
+            Product product = new Product(1, 0, "GetIDsSucces", "Product", "WaterBowl");
+            product.AddProduct(product.UniqueIdentifier, product.Type);
+            product = product.GetProduct();
+            product.UserID = 1;
+            product.UpdateProduct(product.ProductID, product.UserID, "Product", product.UniqueIdentifier);
+            Product GetIDs = product.GetProductIDAndUserID(product.UniqueIdentifier);
+            Assert.AreEqual(product.UserID, GetIDs.UserID);
+            Assert.AreEqual(product.ProductID, GetIDs.ProductID);
+            GetIDs.DeleteProduct(GetIDs.ProductID, GetIDs.UserID);
         }
     }
 }

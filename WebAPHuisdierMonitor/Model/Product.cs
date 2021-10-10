@@ -90,7 +90,7 @@ namespace WebAPIHuisdierMonitor.Model
             }
         }
 
-        public Product GetProduct()
+        public Product GetProduct() //wordt alleen gebruikt binnen de unit tests
         {
             try
             {
