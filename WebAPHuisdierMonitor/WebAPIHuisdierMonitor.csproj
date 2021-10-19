@@ -2,9 +2,12 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
+    <UserSecretsId>6fce240a-210b-48d0-8955-320f0c447498</UserSecretsId>
+    <ApplicationInsightsResourceId>/subscriptions/5114ee46-7f92-49ce-a76b-49b3bb320448/resourceGroups/API-PetMonitor/providers/microsoft.insights/components/PetMonitor</ApplicationInsightsResourceId>
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.15.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.1.10" />
     <PackageReference Include="System.Data.SqlClient" Version="4.8.3" />
   </ItemGroup>
