@@ -24,7 +24,7 @@ namespace WebAPIHuisdierMonitor.Controllers
             }
             catch (DivideByZeroException)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError);
+                return StatusCode(StatusCodes.Status100Continue);
             }
             catch (ArgumentNullException)
             {

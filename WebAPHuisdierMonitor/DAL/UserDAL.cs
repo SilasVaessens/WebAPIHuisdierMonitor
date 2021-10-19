@@ -10,7 +10,7 @@ namespace WebAPIHuisdierMonitor.DAL
 {
     public static class UserDAL
     {
-        private readonly static string ConnString = "Server=tcp:petmonitor.database.windows.net,1433;Initial Catalog=PetMonitorDB;Persist Security Info=False;User ID=PetMonitor;Password=99Siva'02;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;";
+        private readonly static string ConnString = "Data Source=LAPTOP-4NFCKE65;Initial Catalog=PetMonitorDB;Integrated Security=True";
         private readonly static SqlConnection conn = new SqlConnection(ConnString);
 
 
