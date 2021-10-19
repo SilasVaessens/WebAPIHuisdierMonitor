@@ -24,7 +24,7 @@ namespace WebAPIHuisdierMonitor.Controllers
             }
             catch (DivideByZeroException)
             {
-                return StatusCode(StatusCodes.Status100Continue);
+                return StatusCode(StatusCodes.Status501NotImplemented);
             }
             catch (ArgumentNullException)
             {
