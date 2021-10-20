@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using WebAPIHuisdierMonitor.Model;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 
 namespace WebAPIHuisdierMonitor.Controllers
 {
@@ -12,11 +13,17 @@ namespace WebAPIHuisdierMonitor.Controllers
     [Route("[controller]")]
     public class FoodBowlController : ControllerBase
     {
+        private readonly ILogger<FoodBowlController> _logger;
+
+        public FoodBowlController(ILogger<FoodBowlController> logger) =>
+            _logger = logger;
+
         private readonly static FoodBowl StaticFoodBowl = new FoodBowl();
 
         [HttpPost]
         public IActionResult AddFoodBowlMeasurement([FromBody] FoodBowl foodBowl)
         {
+            _logger.LogDebug($"Foodbowl {foodBowl}");
             try
             {
                 StaticFoodBowl.AddMeasurement(foodBowl);
