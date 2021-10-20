@@ -15,7 +15,7 @@ namespace TestsWebAPIHuisdierMonitor
             Product product = new Product(1, 0, "WaterBowlNoUser", "Product", "WaterBowl");
             product.AddProduct(product.UniqueIdentifier, product.Type);
 
-            WaterBowl waterBowl = new WaterBowl(1, 0, product.UniqueIdentifier, 0, DateTime.Now, 0, 0);
+            WaterBowl waterBowl = new WaterBowl(1, 0, product.UniqueIdentifier, 0, DateTime.Now, "0", 0);
             try
             {
                 waterBowl.AddMeasurement(waterBowl);
@@ -35,7 +35,7 @@ namespace TestsWebAPIHuisdierMonitor
         [ExpectedException(typeof(ArgumentNullException))]
         public void AddMeasurementNoProduct()
         {
-            WaterBowl waterBowl = new WaterBowl(1, 0, "WaterBowlNoProduct", 0, DateTime.Now, 0, 0);
+            WaterBowl waterBowl = new WaterBowl(1, 0, "WaterBowlNoProduct", 0, DateTime.Now, "0", 0);
             waterBowl.AddMeasurement(waterBowl);
         }
 
@@ -48,7 +48,7 @@ namespace TestsWebAPIHuisdierMonitor
             product.UserID = 1;
             product.UpdateProduct(product.ProductID, product.UserID, "Product", product.UniqueIdentifier);
 
-            WaterBowl waterBowl = new WaterBowl(product.ProductID, product.UserID, product.UniqueIdentifier, 0, DateTime.Now, 0, 0);
+            WaterBowl waterBowl = new WaterBowl(product.ProductID, product.UserID, product.UniqueIdentifier, 0, DateTime.Now, "0", 0);
             waterBowl.AddMeasurement(waterBowl);
             WaterBowl AddedWaterBowl = waterBowl.GetMeasurement(waterBowl);
 
@@ -65,7 +65,7 @@ namespace TestsWebAPIHuisdierMonitor
         [ExpectedException(typeof(ArgumentNullException))]
         public void GetAllMeasurementsNoMeasurement()
         {
-            WaterBowl waterBowl = new WaterBowl(0, 0, "Identifier", 0, DateTime.Now, 0, 0);
+            WaterBowl waterBowl = new WaterBowl(0, 0, "Identifier", 0, DateTime.Now, "0", 0);
             waterBowl.GetAllMeasurements(waterBowl);
         }
 
@@ -78,13 +78,13 @@ namespace TestsWebAPIHuisdierMonitor
             product.UserID = 1;
             product.UpdateProduct(product.ProductID, product.UserID, "Product", product.UniqueIdentifier);
 
-            WaterBowl waterBowl = new WaterBowl(product.ProductID, product.UserID, product.UniqueIdentifier, 0, DateTime.Now, 123456789, 10);
+            WaterBowl waterBowl = new WaterBowl(product.ProductID, product.UserID, product.UniqueIdentifier, 0, DateTime.Now, "123456789", 10);
             waterBowl.AddMeasurement(waterBowl);
             waterBowl = waterBowl.GetMeasurement(waterBowl);
 
             Assert.AreEqual(1, waterBowl.GetAllMeasurements(waterBowl).Count);
 
-            WaterBowl waterBowl1 = new WaterBowl(product.ProductID, product.UserID, product.UniqueIdentifier, 0, DateTime.Now, 987654321, 20);
+            WaterBowl waterBowl1 = new WaterBowl(product.ProductID, product.UserID, product.UniqueIdentifier, 0, DateTime.Now, "987654321", 20);
             waterBowl1.AddMeasurement(waterBowl1);
             waterBowl1 = waterBowl1.GetMeasurement(waterBowl1);
 
@@ -105,7 +105,7 @@ namespace TestsWebAPIHuisdierMonitor
         [ExpectedException(typeof(ArgumentNullException))]
         public void GetMeasurementWrongIDs()
         {
-            WaterBowl waterBowl = new WaterBowl(0, 0, "GetMeasurementsWrongIDs", 0, DateTime.Now, 0, 0);
+            WaterBowl waterBowl = new WaterBowl(0, 0, "GetMeasurementsWrongIDs", 0, DateTime.Now, "0", 0);
             waterBowl.GetMeasurement(waterBowl);
         }
 
@@ -118,7 +118,7 @@ namespace TestsWebAPIHuisdierMonitor
             product.UserID = 1;
             product.UpdateProduct(product.ProductID, product.UserID, "Product", product.UniqueIdentifier);
 
-            WaterBowl waterBowl = new WaterBowl(product.ProductID, product.UserID, product.UniqueIdentifier, 0, DateTime.Now, 0, 0);
+            WaterBowl waterBowl = new WaterBowl(product.ProductID, product.UserID, product.UniqueIdentifier, 0, DateTime.Now, "0", 0);
             waterBowl.AddMeasurement(waterBowl);
 
             waterBowl = waterBowl.GetMeasurement(waterBowl);
@@ -139,7 +139,7 @@ namespace TestsWebAPIHuisdierMonitor
         [ExpectedException(typeof(ArgumentNullException))]
         public void DeleteAllMeasurementsWrongIDs()
         {
-            WaterBowl waterBowl = new WaterBowl(0, 0, "Identifier", 0, DateTime.Now, 0, 0);
+            WaterBowl waterBowl = new WaterBowl(0, 0, "Identifier", 0, DateTime.Now, "0", 0);
             waterBowl.DeleteAllMeasurements(waterBowl);
         }
 
@@ -152,10 +152,10 @@ namespace TestsWebAPIHuisdierMonitor
             product.UserID = 1;
             product.UpdateProduct(product.ProductID, product.UserID, "Product", product.UniqueIdentifier);
 
-            WaterBowl waterBowl = new WaterBowl(product.ProductID, product.UserID, product.UniqueIdentifier, 0, DateTime.Now, 123456789, 10);
+            WaterBowl waterBowl = new WaterBowl(product.ProductID, product.UserID, product.UniqueIdentifier, 0, DateTime.Now, "123456789", 10);
             waterBowl.AddMeasurement(waterBowl);
 
-            WaterBowl waterBowl1 = new WaterBowl(product.ProductID, product.UserID, product.UniqueIdentifier, 0, DateTime.Now, 987654321, 20);
+            WaterBowl waterBowl1 = new WaterBowl(product.ProductID, product.UserID, product.UniqueIdentifier, 0, DateTime.Now, "987654321", 20);
             waterBowl1.AddMeasurement(waterBowl1);
 
             Assert.AreEqual(2, waterBowl1.GetAllMeasurements(waterBowl1).Count);

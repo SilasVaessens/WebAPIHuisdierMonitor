@@ -15,7 +15,7 @@ namespace TestsWebAPIHuisdierMonitor
             Product product = new Product(1, 0, "FoodBowlNoUser", "Product", "FoodBowl");
             product.AddProduct(product.UniqueIdentifier, product.Type);
 
-            FoodBowl foodBowl = new FoodBowl(1, 0, product.UniqueIdentifier, 0, DateTime.Now, 0, 0);
+            FoodBowl foodBowl = new FoodBowl(1, 0, product.UniqueIdentifier, 0, DateTime.Now, "0", 0);
             try
             {
                 foodBowl.AddMeasurement(foodBowl);
@@ -35,7 +35,7 @@ namespace TestsWebAPIHuisdierMonitor
         [ExpectedException(typeof(ArgumentNullException))]
         public void AddMeasurementNoProduct()
         {
-            FoodBowl foodBowl = new FoodBowl(1, 0, "FoodBowlNoProduct", 0, DateTime.Now, 0, 0);
+            FoodBowl foodBowl = new FoodBowl(1, 0, "FoodBowlNoProduct", 0, DateTime.Now, "0", 0);
             foodBowl.AddMeasurement(foodBowl);
         }
 
@@ -48,7 +48,7 @@ namespace TestsWebAPIHuisdierMonitor
             product.UserID = 1;
             product.UpdateProduct(product.ProductID, product.UserID, "Product", product.UniqueIdentifier);
 
-            FoodBowl foodBowl = new FoodBowl(product.ProductID, product.UserID, product.UniqueIdentifier, 0, DateTime.Now, 0, 0);
+            FoodBowl foodBowl = new FoodBowl(product.ProductID, product.UserID, product.UniqueIdentifier, 0, DateTime.Now, "0", 0);
             foodBowl.AddMeasurement(foodBowl);
             FoodBowl AddedFoodBowl = foodBowl.GetMeasurement(foodBowl);
 
@@ -65,7 +65,7 @@ namespace TestsWebAPIHuisdierMonitor
         [ExpectedException(typeof(ArgumentNullException))]
         public void GetAllMeasurementsNoMeasurement()
         {
-            FoodBowl foodBowl = new FoodBowl(0, 0, "Identifier", 0, DateTime.Now, 0, 0);
+            FoodBowl foodBowl = new FoodBowl(0, 0, "Identifier", 0, DateTime.Now, "0", 0);
             foodBowl.GetAllMeasurements(foodBowl);
         }
 
@@ -78,13 +78,13 @@ namespace TestsWebAPIHuisdierMonitor
             product.UserID = 1;
             product.UpdateProduct(product.ProductID, product.UserID, "Product", product.UniqueIdentifier);
 
-            FoodBowl foodBowl = new FoodBowl(product.ProductID, product.UserID, product.UniqueIdentifier, 0, DateTime.Now, 123456789, 10);
+            FoodBowl foodBowl = new FoodBowl(product.ProductID, product.UserID, product.UniqueIdentifier, 0, DateTime.Now, "123456789", 10);
             foodBowl.AddMeasurement(foodBowl);
             foodBowl = foodBowl.GetMeasurement(foodBowl);
 
             Assert.AreEqual(1, foodBowl.GetAllMeasurements(foodBowl).Count);
 
-            FoodBowl foodBowl1 = new FoodBowl(product.ProductID, product.UserID, product.UniqueIdentifier, 0, DateTime.Now, 987654321, 20);
+            FoodBowl foodBowl1 = new FoodBowl(product.ProductID, product.UserID, product.UniqueIdentifier, 0, DateTime.Now, "987654321", 20);
             foodBowl1.AddMeasurement(foodBowl1);
             foodBowl1 = foodBowl1.GetMeasurement(foodBowl1);
 
@@ -105,7 +105,7 @@ namespace TestsWebAPIHuisdierMonitor
         [ExpectedException(typeof(ArgumentNullException))]
         public void GetMeasurementWrongIDs()
         {
-            FoodBowl foodBowl = new FoodBowl(0, 0, "GetMeasurementsWrongIDs", 0, DateTime.Now, 0, 0);
+            FoodBowl foodBowl = new FoodBowl(0, 0, "GetMeasurementsWrongIDs", 0, DateTime.Now, "0", 0);
             foodBowl.GetMeasurement(foodBowl);
         }
 
@@ -118,7 +118,7 @@ namespace TestsWebAPIHuisdierMonitor
             product.UserID = 1;
             product.UpdateProduct(product.ProductID, product.UserID, "Product", product.UniqueIdentifier);
 
-            FoodBowl foodBowl = new FoodBowl(product.ProductID, product.UserID, product.UniqueIdentifier, 0, DateTime.Now, 0, 0);
+            FoodBowl foodBowl = new FoodBowl(product.ProductID, product.UserID, product.UniqueIdentifier, 0, DateTime.Now, "0", 0);
             foodBowl.AddMeasurement(foodBowl);
 
             foodBowl = foodBowl.GetMeasurement(foodBowl);
@@ -139,7 +139,7 @@ namespace TestsWebAPIHuisdierMonitor
         [ExpectedException(typeof(ArgumentNullException))]
         public void DeleteAllMeasurementsWrongIDs()
         {
-            FoodBowl foodBowl = new FoodBowl(0, 0, "Identifier", 0, DateTime.Now, 0, 0);
+            FoodBowl foodBowl = new FoodBowl(0, 0, "Identifier", 0, DateTime.Now, "0", 0);
             foodBowl.DeleteAllMeasurements(foodBowl);
         }
 
@@ -152,10 +152,10 @@ namespace TestsWebAPIHuisdierMonitor
             product.UserID = 1;
             product.UpdateProduct(product.ProductID, product.UserID, "Product", product.UniqueIdentifier);
 
-            FoodBowl foodBowl = new FoodBowl(product.ProductID, product.UserID, product.UniqueIdentifier, 0, DateTime.Now, 123456789, 10);
+            FoodBowl foodBowl = new FoodBowl(product.ProductID, product.UserID, product.UniqueIdentifier, 0, DateTime.Now, "123456789", 10);
             foodBowl.AddMeasurement(foodBowl);
 
-            FoodBowl foodBowl1 = new FoodBowl(product.ProductID, product.UserID, product.UniqueIdentifier, 0, DateTime.Now, 987654321, 20);
+            FoodBowl foodBowl1 = new FoodBowl(product.ProductID, product.UserID, product.UniqueIdentifier, 0, DateTime.Now, "987654321", 20);
             foodBowl1.AddMeasurement(foodBowl1);
 
             Assert.AreEqual(2, foodBowl1.GetAllMeasurements(foodBowl1).Count);

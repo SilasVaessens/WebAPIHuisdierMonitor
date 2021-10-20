@@ -15,7 +15,7 @@ namespace TestsWebAPIHuisdierMonitor
             Product product = new Product(1, 0, "PetBedAddNoUser", "Product", "PetBed");
             product.AddProduct(product.UniqueIdentifier, product.Type);
 
-            PetBed petBed = new PetBed(1, 0, product.UniqueIdentifier, 0, DateTime.Now, 0, 0);
+            PetBed petBed = new PetBed(1, 0, product.UniqueIdentifier, 0, DateTime.Now, "0", 0);
             try
             {
                 petBed.AddMeasurement(petBed);
@@ -35,7 +35,7 @@ namespace TestsWebAPIHuisdierMonitor
         [ExpectedException(typeof(ArgumentNullException))]
         public void AddMeasurementNoProduct()
         {
-            PetBed petBed = new PetBed(1, 0, "FoodBowlNoProduct", 0, DateTime.Now, 0, 0);
+            PetBed petBed = new PetBed(1, 0, "FoodBowlNoProduct", 0, DateTime.Now, "0", 0);
             petBed.AddMeasurement(petBed);
         }
 
@@ -48,7 +48,7 @@ namespace TestsWebAPIHuisdierMonitor
             product.UserID = 1;
             product.UpdateProduct(product.ProductID, product.UserID, "Product", product.UniqueIdentifier);
 
-            PetBed petBed = new PetBed(product.ProductID, product.UserID, product.UniqueIdentifier, 0, DateTime.Now, 0, 0);
+            PetBed petBed = new PetBed(product.ProductID, product.UserID, product.UniqueIdentifier, 0, DateTime.Now, "0", 0);
             petBed.AddMeasurement(petBed);
             PetBed AddedPetBed = petBed.GetMeasurement(petBed);
 
@@ -65,7 +65,7 @@ namespace TestsWebAPIHuisdierMonitor
         [ExpectedException(typeof(ArgumentNullException))]
         public void GetAllMeasurementsNoMeasurements()
         {
-            PetBed petBed = new PetBed(0, 0, "Identifier", 0, DateTime.Now, 0, 0);
+            PetBed petBed = new PetBed(0, 0, "Identifier", 0, DateTime.Now, "0", 0);
             petBed.GetAllMeasurements(petBed);
         }
 
@@ -78,13 +78,13 @@ namespace TestsWebAPIHuisdierMonitor
             product.UserID = 1;
             product.UpdateProduct(product.ProductID, product.UserID, "Product", product.UniqueIdentifier);
 
-            PetBed petBed = new PetBed(product.ProductID, product.UserID, product.UniqueIdentifier, 0, DateTime.Now, 123456789, 10);
+            PetBed petBed = new PetBed(product.ProductID, product.UserID, product.UniqueIdentifier, 0, DateTime.Now, "123456789", 10);
             petBed.AddMeasurement(petBed);
             petBed = petBed.GetMeasurement(petBed);
 
             Assert.AreEqual(1, petBed.GetAllMeasurements(petBed).Count);
 
-            PetBed petBed2 = new PetBed(product.ProductID, product.UserID, product.UniqueIdentifier, 0, DateTime.Now, 987654321, 20);
+            PetBed petBed2 = new PetBed(product.ProductID, product.UserID, product.UniqueIdentifier, 0, DateTime.Now, "987654321", 20);
             petBed2.AddMeasurement(petBed2);
             petBed2 = petBed2.GetMeasurement(petBed2);
 
@@ -105,7 +105,7 @@ namespace TestsWebAPIHuisdierMonitor
         [ExpectedException(typeof(ArgumentNullException))]
         public void GetMeasurementWrongIDs()
         {
-            PetBed petBed = new PetBed(0, 0, "GetMeasurementsWrongIDs", 0, DateTime.Now, 0, 0);
+            PetBed petBed = new PetBed(0, 0, "GetMeasurementsWrongIDs", 0, DateTime.Now, "0", 0);
             petBed.GetMeasurement(petBed);
         }
 
@@ -118,7 +118,7 @@ namespace TestsWebAPIHuisdierMonitor
             product.UserID = 1;
             product.UpdateProduct(product.ProductID, product.UserID, "Product", product.UniqueIdentifier);
 
-            PetBed petBed = new PetBed(product.ProductID, product.UserID, product.UniqueIdentifier, 0, DateTime.Now, 0, 0);
+            PetBed petBed = new PetBed(product.ProductID, product.UserID, product.UniqueIdentifier, 0, DateTime.Now, "0", 0);
             petBed.AddMeasurement(petBed);
 
             petBed = petBed.GetMeasurement(petBed);
@@ -139,7 +139,7 @@ namespace TestsWebAPIHuisdierMonitor
         [ExpectedException(typeof(ArgumentNullException))]
         public void DeleteAllMeasurementsWrongIDs()
         {
-            PetBed petBed = new PetBed(0, 0, "Identifier", 0, DateTime.Now, 0, 0);
+            PetBed petBed = new PetBed(0, 0, "Identifier", 0, DateTime.Now, "0", 0);
             petBed.DeleteAllMeasurements(petBed);
         }
 
@@ -152,10 +152,10 @@ namespace TestsWebAPIHuisdierMonitor
             product.UserID = 1;
             product.UpdateProduct(product.ProductID, product.UserID, "Product", product.UniqueIdentifier);
 
-            PetBed petBed = new PetBed(product.ProductID, product.UserID, product.UniqueIdentifier, 0, DateTime.Now, 123456789, 10);
+            PetBed petBed = new PetBed(product.ProductID, product.UserID, product.UniqueIdentifier, 0, DateTime.Now, "123456789", 10);
             petBed.AddMeasurement(petBed);
 
-            PetBed petBed1 = new PetBed(product.ProductID, product.UserID, product.UniqueIdentifier, 0, DateTime.Now, 987654321, 20);
+            PetBed petBed1 = new PetBed(product.ProductID, product.UserID, product.UniqueIdentifier, 0, DateTime.Now, "987654321", 20);
             petBed1.AddMeasurement(petBed1);
 
             Assert.AreEqual(2, petBed1.GetAllMeasurements(petBed1).Count);
