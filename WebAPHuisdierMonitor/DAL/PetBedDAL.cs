@@ -67,7 +67,7 @@ namespace WebAPIHuisdierMonitor.DAL
                         UserID = (int)reader["UserID"],
                         MeasurementID = (int)reader["MeasurementID"],
                         Time = (DateTime)reader["Time"],
-                        RFID = (int)reader["RFID"],
+                        RFID = (string)reader["RFID"],
                         Weight = (float)reader["Weight"]
                     };
                 }
@@ -101,7 +101,7 @@ namespace WebAPIHuisdierMonitor.DAL
                         UserID = (int)reader["UserID"],
                         MeasurementID = (int)reader["MeasurementID"],
                         Time = (DateTime)reader["Time"],
-                        RFID = (int)reader["RFID"],
+                        RFID = (string)reader["RFID"],
                         Weight = (float)reader["Weight"]
                     };
                     PetBeds.Add(petBed);

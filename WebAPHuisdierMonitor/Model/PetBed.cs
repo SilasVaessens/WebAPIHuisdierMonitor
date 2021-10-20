@@ -9,7 +9,7 @@ namespace WebAPIHuisdierMonitor.Model
 {
     public class PetBed : Product
     {
-        public int RFID { get; set; }
+        public string RFID { get; set; }
         public float Weight { get; set; }
 
         public PetBed()
@@ -17,7 +17,7 @@ namespace WebAPIHuisdierMonitor.Model
 
         }
 
-        public PetBed(int ProductID, int UserID, string Identifier, int MeasurementID, DateTime Time, int RFIDValue, float WeightValue) : base(ProductID, UserID, Identifier, MeasurementID, Time)
+        public PetBed(int ProductID, int UserID, string Identifier, int MeasurementID, DateTime Time, string RFIDValue, float WeightValue) : base(ProductID, UserID, Identifier, MeasurementID, Time)
         {
             RFID = RFIDValue;
             Weight = WeightValue;
