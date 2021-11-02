@@ -15,7 +15,7 @@ namespace WebAPIHuisdierMonitor.Controllers
     {
         private readonly static FoodBowl StaticFoodBowl = new FoodBowl();
 
-        [HttpPost]
+        [HttpPost("Post")]
         public IActionResult AddFoodBowlMeasurement([FromBody] FoodBowl foodBowl)
         {
             try
@@ -37,7 +37,7 @@ namespace WebAPIHuisdierMonitor.Controllers
             }
         }
 
-        [HttpGet]
+        [HttpPost("Get")]
         public IActionResult GetFoodBowlMeasurements([FromBody] FoodBowl foodBowl)
         {
             try
@@ -54,7 +54,7 @@ namespace WebAPIHuisdierMonitor.Controllers
             }
         }
 
-        [HttpGet("GetAll")]
+        [HttpPost("GetAll")]
         public IActionResult GetAllFoodBowlMeasurements([FromBody] FoodBowl foodBowl)
         {
             try
@@ -71,7 +71,7 @@ namespace WebAPIHuisdierMonitor.Controllers
             }
         }
 
-        [HttpDelete]
+        [HttpPost("Delete")]
         public IActionResult DeleteAllFoodBowlMeasurements([FromBody] FoodBowl foodBowl)
         {
             try
