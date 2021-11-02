@@ -31,7 +31,7 @@ namespace WebAPIHuisdierMonitor
             {
                 options.AddDefaultPolicy(builder =>
                 {
-                    builder.WithOrigins("https://localhost:44320/");
+                    builder.AllowAnyMethod().AllowAnyHeader().AllowAnyOrigin();
                 });
             });
         }
