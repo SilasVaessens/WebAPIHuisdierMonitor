@@ -14,7 +14,7 @@ namespace WebAPIHuisdierMonitor.Controllers
     {
         private readonly static AutoFeeder StaticAutoFeeder = new AutoFeeder();
 
-        [HttpGet]
+        [HttpPost("Get")]
         public IActionResult GetAutoFeederMeasurements([FromBody] AutoFeeder autoFeeder)
         {
             try
@@ -31,7 +31,7 @@ namespace WebAPIHuisdierMonitor.Controllers
             }
         }
 
-        [HttpGet("GetAll")]
+        [HttpPost("GetAll")]
         public IActionResult GetAllAutoFeederMeasurements([FromBody] AutoFeeder autoFeeder)
         {
             try
@@ -48,7 +48,7 @@ namespace WebAPIHuisdierMonitor.Controllers
             }
         }
 
-        [HttpDelete]
+        [HttpPost("Delete")]
         public IActionResult DeleteAllAutoFeederMeasurements([FromBody] AutoFeeder autoFeeder)
         {
             try
@@ -66,7 +66,7 @@ namespace WebAPIHuisdierMonitor.Controllers
             }
         }
 
-        [HttpPost]
+        [HttpPost("Post")]
         public IActionResult AddAutoFeederMeasurement([FromBody] AutoFeeder autoFeeder)
         {
             try

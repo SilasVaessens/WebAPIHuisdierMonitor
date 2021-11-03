@@ -15,7 +15,7 @@ namespace WebAPIHuisdierMonitor.Controllers
     {
         private readonly static User StaticUser = new User();
 
-        [HttpPost]
+        [HttpPost("Post")]
         public IActionResult AddUser([FromBody] User user)
         {
             try
@@ -33,7 +33,7 @@ namespace WebAPIHuisdierMonitor.Controllers
             }
         }
 
-        [HttpDelete]
+        [HttpPost("Delete")]
         public IActionResult DeleteUser([FromBody] User user)
         {
             try
@@ -55,7 +55,7 @@ namespace WebAPIHuisdierMonitor.Controllers
             }
         }
 
-        [HttpGet]
+        [HttpPost("Login")]
         public IActionResult ValidateLogIn([FromBody] User user)
         {
             try

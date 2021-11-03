@@ -14,7 +14,7 @@ namespace WebAPIHuisdierMonitor.Controllers
     {
         private readonly static PetBed StaticPetBed = new PetBed();
 
-        [HttpPost]
+        [HttpPost("Post")]
         public IActionResult AddPetBedMeasurement([FromBody] PetBed petBed)
         {
             try
@@ -36,7 +36,7 @@ namespace WebAPIHuisdierMonitor.Controllers
             }
         }
 
-        [HttpGet]
+        [HttpPost("Get")]
         public IActionResult GetPetBedMeasurement([FromBody] PetBed petBed)
         {
             try
@@ -53,7 +53,7 @@ namespace WebAPIHuisdierMonitor.Controllers
             }
         }
 
-        [HttpGet("GetAll")]
+        [HttpPost("GetAll")]
         public IActionResult GetAllPetBedMeasurements([FromBody] PetBed petBed)
         {
             try
@@ -70,7 +70,7 @@ namespace WebAPIHuisdierMonitor.Controllers
             }
         }
 
-        [HttpDelete]
+        [HttpPost("Delete")]
         public IActionResult DeleteAllPetBedMeasurements([FromBody] PetBed petBed)
         {
             try

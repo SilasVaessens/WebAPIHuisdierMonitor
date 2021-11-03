@@ -16,7 +16,7 @@ namespace WebAPIHuisdierMonitor.Controllers
     {
         private readonly static Product StaticProduct = new Product();
 
-        [HttpPost]
+        [HttpPost("Post")]
         public IActionResult AddProduct([FromBody] Product product)
         {
             try
@@ -34,7 +34,7 @@ namespace WebAPIHuisdierMonitor.Controllers
             }
         }
 
-        [HttpDelete]
+        [HttpPost("Delete")]
         public IActionResult DeleteProduct([FromBody] Product product)
         {
             try
@@ -52,7 +52,7 @@ namespace WebAPIHuisdierMonitor.Controllers
             } 
         }
 
-        [HttpGet]
+        [HttpPost("GetAll")]
         public IActionResult GetAllProducts([FromBody] Product product)
         {
             try

@@ -14,7 +14,7 @@ namespace WebAPIHuisdierMonitor.Controllers
     {
         private readonly static WaterBowl StaticWaterBowl = new WaterBowl();
 
-        [HttpPost]
+        [HttpPost("Post")]
         public IActionResult AddWaterBowlMeasurement([FromBody] WaterBowl waterBowl)
         {
             try
@@ -36,7 +36,7 @@ namespace WebAPIHuisdierMonitor.Controllers
             }
         }
 
-        [HttpGet]
+        [HttpPost("Get")]
         public IActionResult GetWaterBowlMeasurement([FromBody] WaterBowl waterBowl)
         {
             try
@@ -53,7 +53,7 @@ namespace WebAPIHuisdierMonitor.Controllers
             }
         }
 
-        [HttpGet("GetAll")]
+        [HttpPost("GetAll")]
         public IActionResult GetAllWaterBowlMeasurements([FromBody] WaterBowl waterBowl)
         {
             try
@@ -70,7 +70,7 @@ namespace WebAPIHuisdierMonitor.Controllers
             }
         }
 
-        [HttpDelete]
+        [HttpPost("Delete")]
         public IActionResult DeleteAllWaterBowlMeasurements([FromBody] WaterBowl waterBowl)
         {
             try
