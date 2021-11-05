@@ -133,6 +133,14 @@ namespace WebAPIHuisdierMonitor.Model
             {
                 try
                 {
+                    if (ProductID == 0)
+                    {
+                        ProductDAL.UpdateProduct(UserID, Name, ProductDAL.GetProductID(UniqueIdentifier));
+                    }
+                    else
+                    {
+                        ProductDAL.UpdateProduct(UserID, Name, ProductID);
+                    }
                     ProductDAL.UpdateProduct(UserID, Name, ProductID);
                 }
                 catch (DivideByZeroException) //als er iets misgaat in de database

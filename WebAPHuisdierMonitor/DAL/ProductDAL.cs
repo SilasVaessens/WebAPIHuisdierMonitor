@@ -268,5 +268,32 @@ namespace WebAPIHuisdierMonitor.DAL
                 throw;
             }
         }
+
+        public static int GetProductID(string UniqueIdentifier)
+        {
+            Product product = new Product();
+            using SqlCommand cmd = new SqlCommand(ConnString);
+            cmd.Connection = conn;
+            cmd.CommandText = "SELECT * FROM Products WHERE UniqueIdentifier = @UniqueIdentifier";
+            cmd.Parameters.AddWithValue("@UniqueIdentifier", UniqueIdentifier);
+            try
+            {
+                conn.Open();
+                using SqlDataReader reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                    product.UniqueIdentifier = (string)reader["UniqueIdentifier"];
+                    product.ProductID = (int)reader["ProductID"];
+                }
+                conn.Close();
+                return product.ProductID;
+            }
+            catch (SqlException)
+            {
+                conn.Close();
+                throw new DivideByZeroException();
+            }
+
+        }
     }
 }
