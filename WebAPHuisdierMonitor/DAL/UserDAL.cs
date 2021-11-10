@@ -82,9 +82,10 @@ namespace WebAPIHuisdierMonitor.DAL
         {
             using SqlCommand cmd = new SqlCommand(ConnString);
             cmd.Connection = conn;
-            cmd.CommandText = "INSERT INTO Users VALUES (@UserName, @PassWordHash)";
+            cmd.CommandText = "INSERT INTO Users VALUES (@UserName, @PassWordHash, @Salt)";
             cmd.Parameters.AddWithValue("@UserName", user.UserName);
             cmd.Parameters.AddWithValue("@PassWordHash", user.PassWordHash);
+            cmd.Parameters.AddWithValue("@Salt", user.Salt);
             try
             {
                 conn.Open();
@@ -143,24 +144,25 @@ namespace WebAPIHuisdierMonitor.DAL
             }
         }
 
-        public static int ValidateLogIn(string UserName, string PassWordHash)
+        public static User ValidateLogin(string UserName)
         {
-            int UserID = 0;
+            User ToValidate = new User();
             using SqlCommand cmd = new SqlCommand(ConnString);
             cmd.Connection = conn;
-            cmd.CommandText = "SELECT * FROM Users WHERE UserName = @UserName AND PassWordHash = @PassWordHash";
+            cmd.CommandText = "SELECT * FROM Users WHERE UserName = @UserName";
             cmd.Parameters.AddWithValue("@Username", UserName);
-            cmd.Parameters.AddWithValue("@PassWordHash", PassWordHash);
             try
             {
                 conn.Open();
                 using SqlDataReader reader = cmd.ExecuteReader();
                 while (reader.Read())
                 {
-                    UserID = (int)reader["UserID"];
+                    ToValidate.UserID = (int)reader["UserID"];
+                    ToValidate.PassWordHash = (string)reader["PassWordHash"];
+                    ToValidate.Salt = (string)reader["Salt"];
                 }
                 conn.Close();
-                return UserID;
+                return ToValidate;
             }
             catch (SqlException)
             {
@@ -168,5 +170,6 @@ namespace WebAPIHuisdierMonitor.DAL
                 throw new DivideByZeroException();
             }
         }
+
     }
 }

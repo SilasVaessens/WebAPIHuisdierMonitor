@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using WebAPIHuisdierMonitor.DAL;
+using Konscious.Security.Cryptography;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace WebAPIHuisdierMonitor.Model
 {
@@ -11,6 +14,7 @@ namespace WebAPIHuisdierMonitor.Model
         public int UserID { get; set; }
         public string UserName { get; set; }
         public string PassWordHash { get; set; }
+        public string Salt { get; set; }
 
         public User()
         {
@@ -31,6 +35,10 @@ namespace WebAPIHuisdierMonitor.Model
             {
                 try
                 {
+                    byte[] Salt = CreateSalt(); //create salt
+                    byte[] Hash = HashPassword(user.PassWordHash, Salt); //hash password + salt
+                    user.Salt = Encoding.UTF8.GetString(Salt);
+                    user.PassWordHash = Encoding.UTF8.GetString(Hash);
                     UserDAL.AddUser(user);
                 }
                 catch (DivideByZeroException)
@@ -79,17 +87,55 @@ namespace WebAPIHuisdierMonitor.Model
             }
         }
 
-        public int ValidateLogIn(string UserName, string PassWordHash)
+        public int ValidateLogIn(string UserName, string Password)
         {
             try
             {
-                return UserDAL.ValidateLogIn(UserName, PassWordHash);
-}
+                User ToValidate = UserDAL.ValidateLogin(UserName);
+                byte[] SaltArray = Encoding.ASCII.GetBytes(ToValidate.Salt); //convert to byte array
+                byte[] HashArray = Encoding.ASCII.GetBytes(ToValidate.PassWordHash);
+
+                bool Succes = VerifyHash(Password, SaltArray, HashArray);
+                if (Succes)
+                {
+                    return ToValidate.UserID;
+                }
+                else
+                {
+                    return 0;
+                }
+
+            }
             catch (DivideByZeroException)
             {
                 throw;
             }
+        }
 
+        private byte[] CreateSalt()
+        {
+            var buffer = new byte[16];
+            var rng = new RNGCryptoServiceProvider();
+            rng.GetBytes(buffer);
+            return buffer;
+        }
+
+        private byte[] HashPassword(string password, byte[] salt)
+        {
+            var argon2 = new Argon2id(Encoding.UTF8.GetBytes(password));
+
+            argon2.Salt = salt;
+            argon2.DegreeOfParallelism = 8; // four cores
+            argon2.Iterations = 4;
+            argon2.MemorySize = 32 * 32;
+
+            return argon2.GetBytes(16);
+        }
+
+        private bool VerifyHash(string password, byte[] salt, byte[] hash)
+        {
+            var newHash = HashPassword(password, salt);
+            return hash.SequenceEqual(newHash);
         }
 
         public User GetUser()
