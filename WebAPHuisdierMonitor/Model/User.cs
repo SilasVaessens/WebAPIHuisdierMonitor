@@ -37,8 +37,8 @@ namespace WebAPIHuisdierMonitor.Model
                 {
                     byte[] Salt = CreateSalt(); //create salt
                     byte[] Hash = HashPassword(user.PassWordHash, Salt); //hash password + salt
-                    user.Salt = Encoding.UTF8.GetString(Salt);
-                    user.PassWordHash = Encoding.UTF8.GetString(Hash);
+                    user.Salt = Convert.ToBase64String(Salt);
+                    user.PassWordHash = Convert.ToBase64String(Hash);
                     UserDAL.AddUser(user);
                 }
                 catch (DivideByZeroException)
@@ -92,8 +92,8 @@ namespace WebAPIHuisdierMonitor.Model
             try
             {
                 User ToValidate = UserDAL.ValidateLogin(UserName);
-                byte[] SaltArray = Encoding.ASCII.GetBytes(ToValidate.Salt); //convert to byte array
-                byte[] HashArray = Encoding.ASCII.GetBytes(ToValidate.PassWordHash);
+                byte[] SaltArray = Convert.FromBase64String(ToValidate.Salt); //convert to byte array
+                byte[] HashArray = Convert.FromBase64String(ToValidate.PassWordHash); 
 
                 bool Succes = VerifyHash(Password, SaltArray, HashArray);
                 if (Succes)
