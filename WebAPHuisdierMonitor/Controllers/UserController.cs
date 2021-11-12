@@ -75,5 +75,42 @@ namespace WebAPIHuisdierMonitor.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
+
+        [HttpPut("Username")]
+        public IActionResult UpdateUsername([FromBody] User user)
+        {
+            try
+            {
+                StaticUser.UpdateUserName(user);
+                return Ok();
+            }
+            catch (DivideByZeroException) // sql error
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+            catch (ArgumentNullException) // User staat al in database
+            {
+                return StatusCode(StatusCodes.Status409Conflict);
+            }
+        }
+
+        [HttpPut("Password")]
+        public IActionResult UpdatePassword([FromBody] User user)
+        {
+            try
+            {
+                StaticUser.UpdatePassword(user);
+                return Ok();
+            }
+            catch (DivideByZeroException) // sql error
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+            catch (ArgumentNullException) // User staat al in database
+            {
+                return StatusCode(StatusCodes.Status409Conflict);
+            }
+
+        }
     }
 }

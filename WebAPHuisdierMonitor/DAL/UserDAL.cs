@@ -171,5 +171,47 @@ namespace WebAPIHuisdierMonitor.DAL
             }
         }
 
+        public static void UpdateUsername(User user)
+        {
+            using SqlCommand cmd = new SqlCommand(ConnString);
+            cmd.Connection = conn;
+            cmd.CommandText = "UPDATE Users SET UserName = @UserName WHERE UserID = @UserID";
+            cmd.Parameters.AddWithValue("@UserID", user.UserID);
+            cmd.Parameters.AddWithValue("@UserName", user.UserName);
+            try
+            {
+                conn.Open();
+                cmd.ExecuteNonQuery();
+                conn.Close();
+            }
+            catch (SqlException e)
+            {
+                Debug.WriteLine("Error : " + e);
+                conn.Close();
+                throw new DivideByZeroException();
+            }
+        }
+
+        public static void UpdatePassword(User user)
+        {
+            using SqlCommand cmd = new SqlCommand(ConnString);
+            cmd.Connection = conn;
+            cmd.CommandText = "UPDATE Users SET PassWordHash = @PassWordHash, Salt = @Salt WHERE UserID = @UserID";
+            cmd.Parameters.AddWithValue("@UserID", user.UserID);
+            cmd.Parameters.AddWithValue("@PassWordHash", user.PassWordHash);
+            cmd.Parameters.AddWithValue("@Salt", user.Salt);
+            try
+            {
+                conn.Open();
+                cmd.ExecuteNonQuery();
+                conn.Close();
+            }
+            catch (SqlException e)
+            {
+                Debug.WriteLine("Error : " + e);
+                conn.Close();
+                throw new DivideByZeroException();
+            }
+        }
     }
 }

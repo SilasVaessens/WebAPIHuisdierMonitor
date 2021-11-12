@@ -87,6 +87,59 @@ namespace WebAPIHuisdierMonitor.Model
             }
         }
 
+        public void UpdateUserName(User user)
+        {
+            bool? Exists = UserDAL.UserExists(user.UserName);
+            if (Exists == true)
+            {
+                try
+                {
+                    UserDAL.UpdateUsername(user);
+                }
+                catch (DivideByZeroException)
+                {
+                    throw;
+                }
+            }
+            if (Exists == null)
+            {
+                throw new DivideByZeroException();
+            }
+            if (Exists == false)
+            {
+                throw new ArgumentNullException();
+            }
+        }
+
+        public void UpdatePassword(User user)
+        {
+            bool? Exists = UserDAL.UserExists(user.UserID);
+            if (Exists == true)
+            {
+                try
+                {
+                    byte[] Salt = CreateSalt(); //create salt
+                    byte[] Hash = HashPassword(user.PassWordHash, Salt); //hash password + salt
+                    user.Salt = Convert.ToBase64String(Salt);
+                    user.PassWordHash = Convert.ToBase64String(Hash);
+                    UserDAL.UpdatePassword(user);
+                }
+                catch (DivideByZeroException)
+                {
+                    throw;
+                }
+            }
+            if (Exists == null)
+            {
+                throw new DivideByZeroException();
+            }
+            if (Exists == false)
+            {
+                throw new ArgumentNullException();
+            }
+
+        }
+
         public int ValidateLogIn(string UserName, string Password)
         {
             try
@@ -122,12 +175,13 @@ namespace WebAPIHuisdierMonitor.Model
 
         private byte[] HashPassword(string password, byte[] salt)
         {
-            var argon2 = new Argon2id(Encoding.UTF8.GetBytes(password));
-
-            argon2.Salt = salt;
-            argon2.DegreeOfParallelism = 8; // four cores
-            argon2.Iterations = 4;
-            argon2.MemorySize = 32 * 32;
+            var argon2 = new Argon2id(Encoding.UTF8.GetBytes(password))
+            {
+                Salt = salt,
+                DegreeOfParallelism = 8, // four cores
+                Iterations = 4,
+                MemorySize = 32 * 32
+            };
 
             return argon2.GetBytes(16);
         }
@@ -137,6 +191,8 @@ namespace WebAPIHuisdierMonitor.Model
             var newHash = HashPassword(password, salt);
             return hash.SequenceEqual(newHash);
         }
+
+
 
         public User GetUser()
         {
