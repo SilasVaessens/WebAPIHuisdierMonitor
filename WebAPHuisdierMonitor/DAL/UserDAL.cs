@@ -184,9 +184,8 @@ namespace WebAPIHuisdierMonitor.DAL
                 cmd.ExecuteNonQuery();
                 conn.Close();
             }
-            catch (SqlException e)
+            catch (SqlException)
             {
-                Debug.WriteLine("Error : " + e);
                 conn.Close();
                 throw new DivideByZeroException();
             }
@@ -206,9 +205,8 @@ namespace WebAPIHuisdierMonitor.DAL
                 cmd.ExecuteNonQuery();
                 conn.Close();
             }
-            catch (SqlException e)
+            catch (SqlException)
             {
-                Debug.WriteLine("Error : " + e);
                 conn.Close();
                 throw new DivideByZeroException();
             }
