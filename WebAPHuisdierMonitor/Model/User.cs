@@ -90,7 +90,7 @@ namespace WebAPIHuisdierMonitor.Model
         public void UpdateUserName(User user)
         {
             bool? Exists = UserDAL.UserExists(user.UserName);
-            if (Exists == true)
+            if (Exists == false)
             {
                 try
                 {
@@ -105,7 +105,7 @@ namespace WebAPIHuisdierMonitor.Model
             {
                 throw new DivideByZeroException();
             }
-            if (Exists == false)
+            if (Exists == true)
             {
                 throw new ArgumentNullException();
             }
