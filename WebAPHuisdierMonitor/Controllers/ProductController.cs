@@ -42,7 +42,7 @@ namespace WebAPIHuisdierMonitor.Controllers
                 StaticProduct.DeleteProduct(product.ProductID, product.UserID);
                 return Ok();
             }
-            catch (SqlException) //sql error
+            catch (DivideByZeroException) //sql error
             {
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
@@ -59,7 +59,7 @@ namespace WebAPIHuisdierMonitor.Controllers
             {
                 return Ok(StaticProduct.GetAllProducts(product.UserID));
             }
-            catch (SqlException) //ging iets mis in de database
+            catch (DivideByZeroException) //ging iets mis in de database
             {
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
@@ -78,7 +78,7 @@ namespace WebAPIHuisdierMonitor.Controllers
                 StaticProduct.UpdateProduct(product.ProductID, product.UserID, product.Name, product.UniqueIdentifier);
                 return Ok();
             }
-            catch (SqlException) //ging iets mis in de database
+            catch (DivideByZeroException) //ging iets mis in de database
             {
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }

@@ -20,13 +20,17 @@ namespace WebAPIHuisdierMonitor.Controllers
         {
             try
             {
+                StaticPet.AddPet(pet);
                 return Ok();
             }
             catch (DivideByZeroException) // sql error
             {
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
-
+            catch (ArgumentNullException) 
+            {
+                return StatusCode(StatusCodes.Status409Conflict);
+            }
         }
 
         [HttpPost("Delete")]
@@ -34,39 +38,63 @@ namespace WebAPIHuisdierMonitor.Controllers
         {
             try
             {
+                StaticPet.DeletePet(pet);
                 return Ok();
             }
             catch (DivideByZeroException) // sql error
             {
                 return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+            catch (ArgumentNullException)
+            {
+                return StatusCode(StatusCodes.Status404NotFound);
             }
         }
 
         [HttpGet("Getall")]
-        public IActionResult GetAllPets()
+        public IActionResult GetAllPets(int UserID)
         {
             try
             {
-                return Ok();
+                return Ok(StaticPet.GetAllPets(UserID));
             }
             catch (DivideByZeroException) // sql error
             {
                 return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+            catch (ArgumentNullException)
+            {
+                return StatusCode(StatusCodes.Status404NotFound);
             }
         }
 
-        [HttpGet("GetPet")]
-        public IActionResult GetDataPet(int ID)
+        [HttpPost("GetPetData")]
+        public IActionResult GetDataPet([FromBody] Pet pet)
         {
             try
             {
-                return Ok(ID);
+                switch (pet.Name)
+                {
+                    case "Foodbowl":
+                        return Ok(StaticPet.GetDataFoodbowl(pet));
+                    case "WaterBowl":
+                        return Ok(StaticPet.GetDataWaterbowl(pet));
+                    case "AutoFeeder":
+                        return Ok(StaticPet.GetDataAutoFeeders(pet));
+                    case "PetBed":
+                        return Ok(StaticPet.GetDataPetBed(pet));
+                    default:
+                        return NotFound();
+                }
             }
             catch (DivideByZeroException) // sql error
             {
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
-
+            catch (ArgumentNullException)
+            {
+                return StatusCode(StatusCodes.Status404NotFound);
+            }
         }
 
 
@@ -75,11 +103,16 @@ namespace WebAPIHuisdierMonitor.Controllers
         {
             try
             {
+                StaticPet.UpdatePet(pet);
                 return Ok();
             }
             catch (DivideByZeroException) // sql error
             {
                 return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+            catch (ArgumentNullException)
+            {
+                return StatusCode(StatusCodes.Status404NotFound); 
             }
 
         }
