@@ -108,7 +108,7 @@ namespace WebAPIHuisdierMonitor.Controllers
             }
             catch (ArgumentNullException) // User staat al in database
             {
-                return StatusCode(StatusCodes.Status409Conflict);
+                return StatusCode(StatusCodes.Status404NotFound);
             }
 
         }

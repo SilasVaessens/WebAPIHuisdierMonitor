@@ -126,22 +126,21 @@ namespace WebAPIHuisdierMonitor.Model
             }
         }
 
-        public void UpdateProduct(int ProductID, int UserID, string Name, string UniqueIdentifier)
+        public void UpdateProduct(Product product)
         {
-            bool? Exists = ProductDAL.ProductExists(UniqueIdentifier); //controleer of specifiek product bestaat
+            bool? Exists = ProductDAL.ProductExists(product.UniqueIdentifier); //controleer of specifiek product bestaat
             if (Exists == true)
             {
                 try
                 {
                     if (ProductID == 0)
                     {
-                        ProductDAL.UpdateProduct(UserID, Name, ProductDAL.GetProductID(UniqueIdentifier));
+                        ProductDAL.UpdateProduct(product.UserID, product.Name, ProductDAL.GetProductID(product.UniqueIdentifier));
                     }
                     else
                     {
-                        ProductDAL.UpdateProduct(UserID, Name, ProductID);
+                        ProductDAL.UpdateProduct(product.UserID, product.Name, product.ProductID);
                     }
-                    ProductDAL.UpdateProduct(UserID, Name, ProductID);
                 }
                 catch (DivideByZeroException) //als er iets misgaat in de database
                 {

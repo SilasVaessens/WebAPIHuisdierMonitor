@@ -10,12 +10,12 @@ using Microsoft.AspNetCore.Http;
 namespace WebAPIHuisdierMonitor.Controllers
 {
     [ApiController]
-    [Route("controlller")]
+    [Route("[controller]")]
     public class PetController : ControllerBase
     {
         private readonly Pet StaticPet = new Pet();
 
-        [HttpPost("Post")]
+        [HttpPost("Add")]
         public IActionResult AddPet([FromBody] Pet pet)
         {
             try
@@ -27,7 +27,7 @@ namespace WebAPIHuisdierMonitor.Controllers
             {
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
-            catch (ArgumentNullException) 
+            catch (ArgumentNullException)
             {
                 return StatusCode(StatusCodes.Status409Conflict);
             }
@@ -36,6 +36,7 @@ namespace WebAPIHuisdierMonitor.Controllers
         [HttpPost("Delete")]
         public IActionResult DeletePet([FromBody] Pet pet)
         {
+
             try
             {
                 StaticPet.DeletePet(pet);
@@ -51,12 +52,12 @@ namespace WebAPIHuisdierMonitor.Controllers
             }
         }
 
-        [HttpGet("Getall")]
-        public IActionResult GetAllPets(int UserID)
+        [HttpPost("Getall")]
+        public IActionResult GetAllPets([FromBody] Pet pet)
         {
             try
             {
-                return Ok(StaticPet.GetAllPets(UserID));
+                return Ok(StaticPet.GetAllPets(pet.UserID));
             }
             catch (DivideByZeroException) // sql error
             {
@@ -77,10 +78,8 @@ namespace WebAPIHuisdierMonitor.Controllers
                 {
                     case "Foodbowl":
                         return Ok(StaticPet.GetDataFoodbowl(pet));
-                    case "WaterBowl":
+                    case "Waterbowl":
                         return Ok(StaticPet.GetDataWaterbowl(pet));
-                    case "AutoFeeder":
-                        return Ok(StaticPet.GetDataAutoFeeders(pet));
                     case "PetBed":
                         return Ok(StaticPet.GetDataPetBed(pet));
                     default:
@@ -112,7 +111,7 @@ namespace WebAPIHuisdierMonitor.Controllers
             }
             catch (ArgumentNullException)
             {
-                return StatusCode(StatusCodes.Status404NotFound); 
+                return StatusCode(StatusCodes.Status404NotFound);
             }
 
         }

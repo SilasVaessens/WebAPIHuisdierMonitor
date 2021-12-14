@@ -69,7 +69,7 @@ namespace WebAPIHuisdierMonitor.DAL
                         MeasurementID = (int)reader["MeasurementID"],
                         Time = (DateTime)reader["Time"],
                         RFID = (string)reader["RFID"],
-                        Weight = (float)reader["Weight"]
+                        Weight = (int)reader["Weight"]
                     };
                 }
                 conn.Close();
@@ -103,7 +103,7 @@ namespace WebAPIHuisdierMonitor.DAL
                         MeasurementID = (int)reader["MeasurementID"],
                         Time = (DateTime)reader["Time"],
                         RFID = (string)reader["RFID"],
-                        Weight = (float)reader["Weight"]
+                        Weight = (int)reader["Weight"]
                     };
                     FoodBowls.Add(foodBowl);
                 }

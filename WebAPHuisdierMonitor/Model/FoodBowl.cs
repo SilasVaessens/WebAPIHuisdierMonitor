@@ -10,14 +10,14 @@ namespace WebAPIHuisdierMonitor.Model
     public class FoodBowl : Product
     {
         public string RFID { get; set; }
-        public float Weight { get; set; }
+        public int Weight { get; set; }
 
         public FoodBowl()
         {
 
         }
 
-        public FoodBowl(int ProductID, int UserID, string Identifier, int MeasurementID, DateTime Time, string RFIDValue, float WeightValue) : base(ProductID, UserID, Identifier, MeasurementID, Time)
+        public FoodBowl(int ProductID, int UserID, string Identifier, int MeasurementID, DateTime Time, string RFIDValue, int WeightValue) : base(ProductID, UserID, Identifier, MeasurementID, Time)
         {
             RFID = RFIDValue;
             Weight = WeightValue;
@@ -135,6 +135,30 @@ namespace WebAPIHuisdierMonitor.Model
             {
                 throw new ArgumentNullException();
             }
+        }
+
+        public List<Pet> GetFoodPet(FoodBowl foodBowl)
+        {
+            try
+            {
+                Product Feeder = GetProductIDAndUserID(foodBowl.UniqueIdentifier); //verkrijg Product en UserID
+                Pet pet = new Pet();
+                List<Pet> PetData = pet.GetAllPets(Feeder.UserID);
+                return PetData;
+            }
+            catch (DivideByZeroException) // sql error
+            {
+                throw;
+            }
+            catch (ArgumentNullException) //pet of product bestaat niet / niet geregistreerd
+            {
+                throw;
+            }
+            catch (InvalidCastException) // product nog niet geregistreerd
+            {
+                throw;
+            }
+
         }
     }
 }

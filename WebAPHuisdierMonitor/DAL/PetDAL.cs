@@ -48,7 +48,7 @@ namespace WebAPIHuisdierMonitor.DAL
 
         public static bool? PetExists(int UserID)
         {
-            int ID = 0;
+            List<int> ExistingPets = new List<int>();
             using SqlCommand cmd = new SqlCommand(ConnString);
             cmd.Connection = conn;
             cmd.CommandText = "SELECT * FROM Pets WHERE UserID = @UserID";
@@ -59,10 +59,11 @@ namespace WebAPIHuisdierMonitor.DAL
                 using SqlDataReader reader = cmd.ExecuteReader();
                 while (reader.Read())
                 {
-                    ID = (int)reader["UserID"];
+                    int ID = (int)reader["UserID"];
+                    ExistingPets.Add(ID);
                 }
                 conn.Close();
-                if (ID == UserID)
+                if (ExistingPets.Count > 0)
                 {
                     return true;
                 }
@@ -82,18 +83,20 @@ namespace WebAPIHuisdierMonitor.DAL
         {
             using SqlCommand cmd = new SqlCommand(ConnString);
             cmd.Connection = conn;
-            cmd.CommandText = "INSERT INTO Pets VALUES (@UserID, @Name, @RFID)";
+            cmd.CommandText = "INSERT INTO Pets VALUES (@UserID, @Name, @RFID, @AmountFood)";
             cmd.Parameters.AddWithValue("@UserID", pet.UserID);
             cmd.Parameters.AddWithValue("@Name", pet.Name);
             cmd.Parameters.AddWithValue("@RFID", pet.RFID);
+            cmd.Parameters.AddWithValue("AmountFood", pet.AmountFood);
             try
             {
                 conn.Open();
                 cmd.ExecuteNonQuery();
                 conn.Close();
             }
-            catch (SqlException)
+            catch (SqlException e)
             {
+                Console.WriteLine(e.Message);
                 conn.Close();
                 throw new DivideByZeroException();
             }
@@ -118,13 +121,14 @@ namespace WebAPIHuisdierMonitor.DAL
             }
         }
 
-        public static void UpdatePet (int PetID, string Name)
+        public static void UpdatePet (int PetID, string Name, int AmountFood)
         {
             using SqlCommand cmd = new SqlCommand(ConnString);
             cmd.Connection = conn;
-            cmd.CommandText = "UPDATE Pets SET Name = @Name WHERE PetID = @PetID";
+            cmd.CommandText = "UPDATE Pets SET Name = @Name, AmountFood = @AmountFood WHERE PetID = @PetID";
             cmd.Parameters.AddWithValue("@Name", Name);
             cmd.Parameters.AddWithValue("@PetID", PetID);
+            cmd.Parameters.AddWithValue("@AmountFood", AmountFood);
             try
             {
                 conn.Open();
@@ -157,7 +161,8 @@ namespace WebAPIHuisdierMonitor.DAL
                         PetID = (int)reader["PetID"],
                         UserID = (int)reader["UserID"],
                         Name = (string)reader["Name"],
-                        RFID = (string)reader["RFID"]
+                        RFID = (string)reader["RFID"],
+                        AmountFood = (int)reader["AmountFood"]
                     };
                     Pets.Add(pet);
                 }
@@ -177,11 +182,12 @@ namespace WebAPIHuisdierMonitor.DAL
             using SqlCommand cmd = new SqlCommand(ConnString);
             cmd.Connection = conn;
             cmd.CommandText = "SELECT * FROM FoodBowls WHERE RFID = @RFID";
-            cmd.Parameters.AddWithValue("@RIFD", RFID);
+            cmd.Parameters.AddWithValue("@RFID", RFID);
             try
             {
                 conn.Open();
                 using SqlDataReader reader = cmd.ExecuteReader();
+                Debug.WriteLine(cmd.CommandText);
                 while (reader.Read())
                 {
                     FoodBowl foodBowl = new FoodBowl
@@ -190,48 +196,17 @@ namespace WebAPIHuisdierMonitor.DAL
                         UserID = (int)reader["UserID"],
                         MeasurementID = (int)reader["MeasurementID"],
                         Time = (DateTime)reader["Time"],
-                        Weight = (float)reader["Weight"]
+                        RFID = (string)reader["RFID"],
+                        Weight = (int)reader["Weight"],
                     };
                     foodBowls.Add(foodBowl);
                 }
                 conn.Close();
                 return foodBowls;
             }
-            catch (SqlException)
+            catch (SqlException ex)
             {
-                conn.Close();
-                throw new DivideByZeroException();
-            }
-        }
-
-        public static List<AutoFeeder> GetDataPetAutoFeeder(string RFID)
-        {
-            List<AutoFeeder> autoFeeders = new List<AutoFeeder>();
-            using SqlCommand cmd = new SqlCommand(ConnString);
-            cmd.Connection = conn;
-            cmd.CommandText = "SELECT * FROM FoodBowls WHERE RFID = @RFID";
-            cmd.Parameters.AddWithValue("@RIFD", RFID);
-            try
-            {
-                conn.Open();
-                using SqlDataReader reader = cmd.ExecuteReader();
-                while (reader.Read())
-                {
-                    AutoFeeder autoFeeder = new AutoFeeder
-                    {
-                        ProductID = (int)reader["ProductID"],
-                        UserID = (int)reader["UserID"],
-                        MeasurementID = (int)reader["MeasurementID"],
-                        Time = (DateTime)reader["Time"],
-                        UnderLimit = (bool)reader["UnderLimit"]
-                    };
-                    autoFeeders.Add(autoFeeder);
-                }
-                conn.Close();
-                return autoFeeders;
-            }
-            catch (SqlException)
-            {
+                Debug.WriteLine(ex.Message);
                 conn.Close();
                 throw new DivideByZeroException();
             }
@@ -243,7 +218,7 @@ namespace WebAPIHuisdierMonitor.DAL
             using SqlCommand cmd = new SqlCommand(ConnString);
             cmd.Connection = conn;
             cmd.CommandText = "SELECT * FROM PetBeds WHERE RFID = @RFID";
-            cmd.Parameters.AddWithValue("@RIFD", RFID);
+            cmd.Parameters.AddWithValue("@RFID", RFID);
             try
             {
                 conn.Open();
@@ -276,8 +251,8 @@ namespace WebAPIHuisdierMonitor.DAL
             List<WaterBowl> waterBowls = new List<WaterBowl>();
             using SqlCommand cmd = new SqlCommand(ConnString);
             cmd.Connection = conn;
-            cmd.CommandText = "SELECT * FROM WaterBowls WHERE RFID = @RFID";
-            cmd.Parameters.AddWithValue("@RIFD", RFID);
+            cmd.CommandText = $"SELECT * FROM WaterBowls WHERE RFID = @RFID";
+            cmd.Parameters.AddWithValue("@RFID", RFID);
             try
             {
                 conn.Open();

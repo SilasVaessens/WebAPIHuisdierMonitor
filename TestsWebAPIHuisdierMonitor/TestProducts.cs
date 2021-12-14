@@ -16,7 +16,7 @@ namespace TestsWebAPIHuisdierMonitor
             Product ExistingProduct = new Product(1, 1, "UniqueTest", "VoerbakSilas", "FoodBowl");
             ExistingProduct.AddProduct(ExistingProduct.UniqueIdentifier, ExistingProduct.Type);
         }
-
+        /*
         [TestMethod]
         public void AddNewProduct()
         {
@@ -28,7 +28,7 @@ namespace TestsWebAPIHuisdierMonitor
             Assert.AreEqual(NewProduct.Type, LastProduct.Type);
             LastProduct.DeleteProduct(LastProduct.ProductID, 1);
         }
-
+        */
         [TestMethod]
         [DataRow(0, 1)]
         [DataRow(1, 0)]
@@ -38,7 +38,7 @@ namespace TestsWebAPIHuisdierMonitor
             Product WrongParameters = new Product();
             WrongParameters.DeleteProduct(ProductID, UserID);
         }
-
+        /*
         [TestMethod]
         public void DeleteExistingProduct()
         {
@@ -55,7 +55,7 @@ namespace TestsWebAPIHuisdierMonitor
             Assert.AreEqual(LastInDB.UniqueIdentifier, AfterDeletion.UniqueIdentifier);
             Assert.AreEqual(LastInDB.Type, AfterDeletion.Type);
         }
-
+        
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
         public void UpdateNotExistingProduct()
@@ -67,13 +67,13 @@ namespace TestsWebAPIHuisdierMonitor
         [TestMethod]
         public void UpdateExistingProduct()
         {
-            Product product = new Product(1, 1, "ShouldBeUnique", "MyProduct", "PetBed");
+            Product product = new Product(1, 4, "ShouldBeUnique", "MyProduct", "PetBed");
             product.AddProduct(product.UniqueIdentifier, product.Type);
 
             int FirstProductID = product.GetProduct().ProductID;
             product.UpdateProduct(FirstProductID, product.UserID, product.Name, product.UniqueIdentifier);
-            
-            User user = new User(1, "TransferUser", "TransferUserPassWord");
+
+            User user = new User(7, "TransferUser", "TransferUserPassWord");
             user.AddUser(user);
             user = user.GetUser();
 
@@ -87,12 +87,12 @@ namespace TestsWebAPIHuisdierMonitor
             product.DeleteProduct(AfterUpdate.ProductID, AfterUpdate.UserID);
             user.DeleteUser(user);
         }
-
+        
         [TestMethod]
         [ExpectedException(typeof(DivideByZeroException))]
         public void UpdateNotExistingUser()
         {
-            Product product = new Product(); 
+            Product product = new Product();
             product.GetProduct();
             product.UpdateProduct(product.ProductID, 0, product.Name, product.UniqueIdentifier);
         }
@@ -104,7 +104,7 @@ namespace TestsWebAPIHuisdierMonitor
             Product product = new Product();
             product.GetAllProducts(0);
         }
-
+        
         [TestMethod]
         public void GetAllProductExistingID()
         {
@@ -160,7 +160,7 @@ namespace TestsWebAPIHuisdierMonitor
                 Assert.IsTrue(true);
             }
         }
-
+        
         [TestMethod]
         public void GetIDsSucces()
         {
@@ -173,6 +173,17 @@ namespace TestsWebAPIHuisdierMonitor
             Assert.AreEqual(product.UserID, GetIDs.UserID);
             Assert.AreEqual(product.ProductID, GetIDs.ProductID);
             GetIDs.DeleteProduct(GetIDs.ProductID, GetIDs.UserID);
+        }
+        */
+        [TestMethod]
+        public void Specific()
+        {
+            Product test = new Product();
+            test.ProductID = 0;
+            test.UserID = 4;
+            test.Name = "Voerbak";
+            test.UniqueIdentifier = "Voerbak";
+            test.UpdateProduct(test);
         }
     }
 }

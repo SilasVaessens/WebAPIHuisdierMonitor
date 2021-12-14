@@ -71,6 +71,27 @@ namespace WebAPIHuisdierMonitor.Controllers
             }
         }
 
+        [HttpPost("GetFood")]
+        public IActionResult GetAmountFoodPets([FromBody] FoodBowl foodBowl)
+        {
+            try
+            {
+                return Ok(StaticFoodBowl.GetFoodPet(foodBowl));
+            }
+            catch (DivideByZeroException)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+            catch (ArgumentNullException)
+            {
+                return StatusCode(StatusCodes.Status404NotFound);
+            }
+            catch (InvalidCastException) // product nog niet geregistreerd
+            {
+                return StatusCode(StatusCodes.Status401Unauthorized);
+            }
+        }
+
         [HttpPost("Delete")]
         public IActionResult DeleteAllFoodBowlMeasurements([FromBody] FoodBowl foodBowl)
         {

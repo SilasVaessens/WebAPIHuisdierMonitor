@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using WebAPIHuisdierMonitor.DAL;
@@ -12,6 +13,7 @@ namespace WebAPIHuisdierMonitor.Model
         public int UserID { get; set; }
         public string Name { get; set; }
         public string RFID { get; set; }
+        public int AmountFood { get; set; }
 
         public Pet()
         {
@@ -46,7 +48,7 @@ namespace WebAPIHuisdierMonitor.Model
             }
             if (Exists == true)
             {
-                throw new ArgumentException();
+                throw new ArgumentNullException();
             }
         }
 
@@ -100,7 +102,7 @@ namespace WebAPIHuisdierMonitor.Model
 
         public List<FoodBowl> GetDataFoodbowl(Pet pet)
         {
-            bool? Exists = PetDAL.PetExists(pet.PetID);
+            bool? Exists = PetDAL.PetExists(pet.UserID);
             if (Exists == true)
             {
                 try
@@ -125,7 +127,7 @@ namespace WebAPIHuisdierMonitor.Model
 
         public List<WaterBowl> GetDataWaterbowl(Pet pet)
         {
-            bool? Exists = PetDAL.PetExists(pet.PetID);
+            bool? Exists = PetDAL.PetExists(pet.UserID);
             if (Exists == true)
             {
                 try
@@ -147,33 +149,9 @@ namespace WebAPIHuisdierMonitor.Model
             }
         }
 
-        public List<AutoFeeder> GetDataAutoFeeders(Pet pet)
-        {
-            bool? Exists = PetDAL.PetExists(pet.PetID);
-            if (Exists == true)
-            {
-                try
-                {
-                    return PetDAL.GetDataPetAutoFeeder(pet.RFID);
-                }
-                catch (DivideByZeroException)
-                {
-                    throw;
-                }
-            }
-            if (Exists == null)
-            {
-                throw new DivideByZeroException();
-            }
-            else
-            {
-                throw new ArgumentNullException();
-            }
-        }
-
         public List<PetBed> GetDataPetBed(Pet pet)
         {
-            bool? Exists = PetDAL.PetExists(pet.PetID);
+            bool? Exists = PetDAL.PetExists(pet.UserID);
             if (Exists == true)
             {
                 try
@@ -197,12 +175,12 @@ namespace WebAPIHuisdierMonitor.Model
 
         public void UpdatePet(Pet pet)
         {
-            bool? Exists = PetDAL.PetExists(pet.PetID);
+            bool? Exists = PetDAL.PetExists(pet.UserID);
             if (Exists == true)
             {
                 try
                 {
-                    PetDAL.UpdatePet(pet.PetID, pet.Name);
+                    PetDAL.UpdatePet(pet.PetID, pet.Name, pet.AmountFood);
                 }
                 catch (DivideByZeroException)
                 {

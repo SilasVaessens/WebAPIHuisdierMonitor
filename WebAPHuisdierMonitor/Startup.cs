@@ -26,7 +26,6 @@ namespace WebAPIHuisdierMonitor
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers().AddNewtonsoftJson();
-            services.AddApplicationInsightsTelemetry(Configuration["APPINSIGHTS_CONNECTIONSTRING"]);
             services.AddCors(options =>
             {
                 options.AddDefaultPolicy(builder =>
@@ -56,6 +55,7 @@ namespace WebAPIHuisdierMonitor
             {
                 endpoints.MapControllers();
             });
+
         }
     }
 }

@@ -71,11 +71,11 @@ namespace WebAPIHuisdierMonitor.Controllers
         }
 
         [HttpPut]
-        public IActionResult UpdateProduct(Product product)
+        public IActionResult UpdateProduct([FromBody]Product product)
         {
             try
             {
-                StaticProduct.UpdateProduct(product.ProductID, product.UserID, product.Name, product.UniqueIdentifier);
+                StaticProduct.UpdateProduct(product);
                 return Ok();
             }
             catch (DivideByZeroException) //ging iets mis in de database
