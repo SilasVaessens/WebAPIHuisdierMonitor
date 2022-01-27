@@ -19,11 +19,6 @@ namespace WebAPIHuisdierMonitor
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers().AddNewtonsoftJson();
-            services.AddCors(o => o.AddPolicy("AllowAnyOrigin",
-                      builder =>
-                      {
-                          builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
-                      }));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -34,11 +29,14 @@ namespace WebAPIHuisdierMonitor
                 app.UseDeveloperExceptionPage();
             }
 
+            app.UseCors(x => x
+            .AllowAnyOrigin()
+            .AllowAnyMethod()
+            .AllowAnyHeader());
+
             app.UseHttpsRedirection();
 
             app.UseRouting();
-
-            app.UseCors("AllowAnyOrigin");
 
             app.UseAuthorization();
 
