@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Konscious.Security.Cryptography;
+using System;
 using System.Linq;
-using System.Threading.Tasks;
-using WebAPIHuisdierMonitor.DAL;
-using Konscious.Security.Cryptography;
 using System.Security.Cryptography;
 using System.Text;
+using WebAPIHuisdierMonitor.DAL;
 
 namespace WebAPIHuisdierMonitor.Model
 {
@@ -146,7 +144,7 @@ namespace WebAPIHuisdierMonitor.Model
             {
                 User ToValidate = UserDAL.ValidateLogin(UserName);
                 byte[] SaltArray = Convert.FromBase64String(ToValidate.Salt); //convert to byte array
-                byte[] HashArray = Convert.FromBase64String(ToValidate.PassWordHash); 
+                byte[] HashArray = Convert.FromBase64String(ToValidate.PassWordHash);
 
                 bool Succes = VerifyHash(Password, SaltArray, HashArray);
                 if (Succes)

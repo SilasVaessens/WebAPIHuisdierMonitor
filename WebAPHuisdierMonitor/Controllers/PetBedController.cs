@@ -1,9 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using WebAPIHuisdierMonitor.Model;
 
 namespace WebAPIHuisdierMonitor.Controllers
@@ -32,7 +29,7 @@ namespace WebAPIHuisdierMonitor.Controllers
             }
             catch (InvalidCastException)
             {
-                return StatusCode(StatusCodes.Status401Unauthorized); 
+                return StatusCode(StatusCodes.Status401Unauthorized);
             }
         }
 
@@ -76,7 +73,7 @@ namespace WebAPIHuisdierMonitor.Controllers
             try
             {
                 StaticPetBed.DeleteAllMeasurements(petBed);
-                return Ok(); 
+                return Ok();
             }
             catch (DivideByZeroException)
             {

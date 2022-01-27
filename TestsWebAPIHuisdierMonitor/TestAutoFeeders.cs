@@ -25,7 +25,7 @@ namespace TestsWebAPIHuisdierMonitor
             {
                 Product AddedProduct = product.GetProduct();
                 AddedProduct.UserID = 1;
-                AddedProduct.UpdateProduct(AddedProduct.ProductID, AddedProduct.UserID, product.Name, AddedProduct.UniqueIdentifier);
+                AddedProduct.UpdateProduct(AddedProduct);
                 AddedProduct.DeleteProduct(AddedProduct.ProductID, AddedProduct.UserID);
                 Assert.IsTrue(true);
             }
@@ -46,7 +46,8 @@ namespace TestsWebAPIHuisdierMonitor
             product.AddProduct(product.UniqueIdentifier, product.Type);
             product = product.GetProduct();
             product.UserID = 1;
-            product.UpdateProduct(product.ProductID, product.UserID, "Product", product.UniqueIdentifier);
+            product.Name = "Product";
+            product.UpdateProduct(product);
 
             AutoFeeder autoFeeder = new AutoFeeder(product.ProductID, product.UserID, product.UniqueIdentifier, 0, DateTime.Now, false);
             autoFeeder.AddMeasurement(autoFeeder);
@@ -75,7 +76,8 @@ namespace TestsWebAPIHuisdierMonitor
             product.AddProduct(product.UniqueIdentifier, product.Type);
             product = product.GetProduct();
             product.UserID = 1;
-            product.UpdateProduct(product.ProductID, product.UserID, "Product", product.UniqueIdentifier);
+            product.Name = "Product";
+            product.UpdateProduct(product);
 
             AutoFeeder autoFeeder = new AutoFeeder(product.ProductID, product.UserID, product.UniqueIdentifier, 0, DateTime.Now, false);
             autoFeeder.AddMeasurement(autoFeeder);
@@ -114,7 +116,8 @@ namespace TestsWebAPIHuisdierMonitor
             product.AddProduct(product.UniqueIdentifier, product.Type);
             product = product.GetProduct();
             product.UserID = 1;
-            product.UpdateProduct(product.ProductID, product.UserID, "Product", product.UniqueIdentifier);
+            product.Name = "Product";
+            product.UpdateProduct(product);
 
             AutoFeeder autoFeeder = new AutoFeeder(product.ProductID, product.UserID, product.UniqueIdentifier, 0, DateTime.Now, false);
             autoFeeder.AddMeasurement(autoFeeder);
@@ -147,7 +150,8 @@ namespace TestsWebAPIHuisdierMonitor
             product.AddProduct(product.UniqueIdentifier, product.Type);
             product = product.GetProduct();
             product.UserID = 1;
-            product.UpdateProduct(product.ProductID, product.UserID, "Product", product.UniqueIdentifier);
+            product.Name = "Product";
+            product.UpdateProduct(product);
 
             AutoFeeder autoFeeder = new AutoFeeder(product.ProductID, product.UserID, product.UniqueIdentifier, 0, DateTime.Now, false);
             autoFeeder.AddMeasurement(autoFeeder);

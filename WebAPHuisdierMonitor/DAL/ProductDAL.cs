@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
 using WebAPIHuisdierMonitor.Model;
 
 
@@ -11,7 +9,7 @@ namespace WebAPIHuisdierMonitor.DAL
 {
     public static class ProductDAL
     {
-        private readonly static string ConnString = "Data Source=192.168.96.3,1913;Initial Catalog=PetMonitorDB;Persist Security Info=True;User ID=user;Password=sv22010899v";
+        private readonly static string ConnString = "Server=tcp:petmonitor.database.windows.net,1433;Initial Catalog=PetMonitorDB;Persist Security Info=False;User ID=PetMonitor;Password=99Siva'02;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;";//"Data Source=192.168.96.3,1913;Initial Catalog=PetMonitorDB;Persist Security Info=True;User ID=user;Password=sv22010899v";
         private readonly static SqlConnection conn = new SqlConnection(ConnString);
 
         public static bool? ProductExists(int ProductID, int UserID)
@@ -96,7 +94,7 @@ namespace WebAPIHuisdierMonitor.DAL
                 {
                     product.ProductID = (int)reader["ProductID"];
                     product.UniqueIdentifier = (string)reader["UniqueIdentifier"];
-                    product.Type = (string)reader["Type"];   
+                    product.Type = (string)reader["Type"];
                 }
                 conn.Close();
                 return product;
@@ -168,7 +166,7 @@ namespace WebAPIHuisdierMonitor.DAL
         {
             using SqlCommand cmd = new SqlCommand(ConnString);
             cmd.Connection = conn;
-            cmd.CommandText = "DELETE FROM Products WHERE ProductID = @ProductID";
+            cmd.CommandText = "UPDATE Products SET UserID = NULL WHERE ProductID = @ProductID";
             cmd.Parameters.AddWithValue("@ProductID", ProductID);
             try
             {
@@ -182,8 +180,8 @@ namespace WebAPIHuisdierMonitor.DAL
                 throw new DivideByZeroException();
             }
         }
-        
-        public static List<Product> GetAllProducts(int UserID) 
+
+        public static List<Product> GetAllProducts(int UserID)
         {
             List<Product> Products = new List<Product>();
             using SqlCommand cmd = new SqlCommand(ConnString);

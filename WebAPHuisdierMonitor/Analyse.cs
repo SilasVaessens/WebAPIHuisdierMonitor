@@ -1,59 +1,87 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
 using WebAPIHuisdierMonitor.Model;
 
 namespace WebAPIHuisdierMonitor
 {
     public class Analyse
     {
-        public double MeanFood { get; }
-        public double MeanWater { get; }
-        public double MeanWeight { get; }
+        public double MeanFoodPerDay { get; }
+        public double MeanWaterPerDay { get; }
+        public double MeanWeightPerDay { get; }
 
-        public double MedianFood { get; }
-        public double MedianWater { get; }
-        public double MedianWeight { get; }
+        public double[] MeanFoodDayPart { get; }
+        public double[] MeanWaterDayPart { get; }
+        public double[] MeanWeightDayPart { get; }
 
-        public TimeSpan[] MeanFoodTimes { get; }
-        public TimeSpan[] MeanWaterTimes { get; }
-        public TimeSpan[] MeanWeightTimes { get; }
+        public double MedianFoodPerDay { get; }
+        public double MedianWaterPerDay { get; }
+        public double MedianWeightPerDay { get; }
 
-        public TimeSpan[] MedianFoodTimes { get; }
-        public TimeSpan[] MedianWaterTimes { get; }
-        public TimeSpan[] MedianWeightTimes { get; }
+        public double[] MedianFoodDayPart { get; }
+        public double[] MedianWaterDayPart { get; }
+        public double[] MedianWeightDayPart { get; }
 
-        private static readonly DateTime NightToMorning = new DateTime(2000, 1, 1, 6, 0, 0);
-        private static readonly DateTime MorningToAfternoon = new DateTime(2000, 1, 1, 12, 0, 0);
-        private static readonly DateTime AfternoonToEvening = new DateTime(2000, 1, 1, 18, 0, 0);
-        private static readonly DateTime EveningToNight = new DateTime(2000, 1, 1, 0, 0, 0);
+        public DateTime[] MeanFoodTimesDayPart { get; }
+        public DateTime[] MeanWaterTimesDayPart { get; }
+        public DateTime[] MeanWeightTimesDayPart { get; }
 
-        public Analyse(List<FoodBowl> foodBowls)
+        public DateTime[] MedianFoodTimesDayPart { get; }
+        public DateTime[] MedianWaterTimesDayPart { get; }
+        public DateTime[] MedianWeightTimesDayPart { get; }
+
+        private readonly DateTime NightToMorning = new DateTime(2000, 1, 1, 6, 0, 0);
+        private readonly DateTime MorningToAfternoon = new DateTime(2000, 1, 1, 12, 0, 0);
+        private readonly DateTime AfternoonToEvening = new DateTime(2000, 1, 1, 18, 0, 0);
+        private readonly DateTime EveningToNight = new DateTime(2000, 1, 1, 23, 59, 59);
+
+
+        public Analyse()
         {
-            MeanFood = CalculateMeanWeight(foodBowls);
-            MedianFood = CalculateMedianWeight(foodBowls);
-            MeanFoodTimes = CalculateMeanTimes(foodBowls);
-            MedianFoodTimes = CalculateMedianTimes(foodBowls);
+
         }
 
-        public Analyse(List<WaterBowl> waterBowls)
+        public Analyse(List<FoodBowl> foodBowls, List<WaterBowl> waterBowls, List<PetBed> petBeds)
         {
-            MeanWater = CalculateMeanWeight(waterBowls);
-            MedianWater = CalculateMedianWeight(waterBowls);
-            MeanWaterTimes = CalculateMeanTimes(waterBowls);
-            MedianWaterTimes = CalculateMedianTimes(waterBowls);
+            if (foodBowls.Count > 0 && foodBowls != null)
+            {
+                MeanFoodPerDay = CalculateMeanWeightPerDay(foodBowls);
+                MedianFoodPerDay = CalculateMedianWeightPerDay(foodBowls);
+
+                MeanFoodDayPart = CalculateMeanWeightDayPart(foodBowls);
+                MedianFoodDayPart = CalculateMedianWeightDayPart(foodBowls);
+
+                MeanFoodTimesDayPart = CalculateMeanTimes(foodBowls);
+                MedianFoodTimesDayPart = CalculateMedianTimes(foodBowls);
+            }
+            if (waterBowls.Count > 0 && waterBowls != null)
+            {
+                MeanWaterPerDay = CalculateMeanWeightPerDay(waterBowls);
+                MedianWaterPerDay = CalculateMedianWeightPerDay(waterBowls);
+
+                MeanWaterDayPart = CalculateMeanWeightDayPart(waterBowls);
+                MedianWaterDayPart = CalculateMedianWeightDayPart(waterBowls);
+
+                MeanWaterTimesDayPart = CalculateMeanTimes(waterBowls);
+                MedianWaterTimesDayPart = CalculateMedianTimes(waterBowls);
+            }
+            if (petBeds.Count > 0 && petBeds != null)
+            {
+                MeanWeightPerDay = CalculateMeanWeightPerDay(petBeds);
+                MedianWeightPerDay = CalculateMedianWeightPerDay(petBeds);
+
+                MeanWeightDayPart = CalculateMeanWeightDayPart(petBeds);
+                MedianWeightDayPart = CalculateMedianWeightDayPart(petBeds);
+
+                MeanWeightTimesDayPart = CalculateMeanTimes(petBeds);
+                MedianWeightTimesDayPart = CalculateMedianTimes(petBeds);
+            }
         }
 
-        public Analyse(List<PetBed> petBeds)
-        {
-            MeanWeight = CalculateMeanWeight(petBeds);
-            MedianWeight = CalculateMedianWeight(petBeds);
-            MeanWeightTimes = CalculateMeanTimes(petBeds);
-            MedianWeightTimes = CalculateMedianTimes(petBeds);
-        }
-
-        private static double CalculateMeanWeight(List<FoodBowl> DataFoodbowls)
+        private static double CalculateMeanWeightPerDay(List<FoodBowl> DataFoodbowls)
         {
             List<int> Weights = new List<int>();
             foreach (FoodBowl foodBowl in DataFoodbowls)
@@ -73,7 +101,7 @@ namespace WebAPIHuisdierMonitor
             }
         }
 
-        private double CalculateMeanWeight(List<WaterBowl> DataWaterBowls)
+        private double CalculateMeanWeightPerDay(List<WaterBowl> DataWaterBowls)
         {
             List<float> Weights = new List<float>();
             foreach (WaterBowl waterBowl in DataWaterBowls)
@@ -93,7 +121,7 @@ namespace WebAPIHuisdierMonitor
             }
         }
 
-        private double CalculateMeanWeight(List<PetBed> DataPetBeds)
+        private double CalculateMeanWeightPerDay(List<PetBed> DataPetBeds)
         {
             List<float> Weights = new List<float>();
             foreach (PetBed petBed in DataPetBeds)
@@ -113,7 +141,47 @@ namespace WebAPIHuisdierMonitor
             }
         }
 
-        private double CalculateMedianWeight(List<FoodBowl> DataFoodBowls)
+        private double[] CalculateMeanWeightDayPart(List<FoodBowl> DataFoodBowls)
+        {
+            List<FoodBowl> CleanedData = new List<FoodBowl>();
+            foreach (FoodBowl foodBowl in DataFoodBowls)
+            {
+                if (foodBowl.Weight > 0)
+                {
+                    CleanedData.Add(foodBowl);
+                }
+            }
+            return GetMeans(SortTimes(CleanedData));
+        }
+
+        private double[] CalculateMeanWeightDayPart(List<WaterBowl> DataWaterBowls)
+        {
+            List<WaterBowl> CleanedData = new List<WaterBowl>();
+            foreach (WaterBowl waterBowl in DataWaterBowls)
+            {
+                if (waterBowl.Weight > 0)
+                {
+                    CleanedData.Add(waterBowl);
+                }
+            }
+            return GetMeans(SortTimes(CleanedData));
+        }
+
+        private double[] CalculateMeanWeightDayPart(List<PetBed> DataPetBeds)
+        {
+            List<PetBed> CleanedData = new List<PetBed>();
+            foreach (PetBed petBed in DataPetBeds)
+            {
+                if (petBed.Weight > 0)
+                {
+                    CleanedData.Add(petBed);
+                }
+            }
+            return GetMeans(SortTimes(CleanedData));
+        }
+
+
+        private double CalculateMedianWeightPerDay(List<FoodBowl> DataFoodBowls)
         {
             List<int> Weights = new List<int>();
             foreach (FoodBowl foodBowl in DataFoodBowls)
@@ -125,16 +193,7 @@ namespace WebAPIHuisdierMonitor
             }
             if (Weights.Count > 0 && Weights != null) //in case there is no data
             {
-                Weights.Sort();
-                int HalfIndex = Weights.Count() / 2;
-                if ((Weights.Count() % 2) == 0) //in case there is an even number of numbers, it is the average of the two middle numbers.
-                {
-                    return Weights[HalfIndex] + Weights[HalfIndex - 1] / 2;
-                }
-                else //otherwise it's just the middle number of a set of numbers
-                {
-                    return Weights[HalfIndex];
-                }
+                return CalculateMedian(Weights);
             }
             else
             {
@@ -142,7 +201,7 @@ namespace WebAPIHuisdierMonitor
             }
         }
 
-        private double CalculateMedianWeight(List<WaterBowl> DataWaterBowls)
+        private double CalculateMedianWeightPerDay(List<WaterBowl> DataWaterBowls)
         {
             List<float> Weights = new List<float>();
             foreach (WaterBowl waterBowl in DataWaterBowls)
@@ -154,16 +213,7 @@ namespace WebAPIHuisdierMonitor
             }
             if (Weights.Count > 0 && Weights != null) //in case there is no data
             {
-                Weights.Sort();
-                int HalfIndex = Weights.Count() / 2;
-                if ((Weights.Count() % 2) == 0) //in case there is an even number of numbers, it is the average of the two middle numbers.
-                {
-                    return Weights[HalfIndex] + Weights[HalfIndex - 1] / 2;
-                }
-                else //otherwise it's just the middle number of a set of numbers
-                {
-                    return Weights[HalfIndex];
-                }
+                return CalculateMedian(Weights);
             }
             else
             {
@@ -171,7 +221,8 @@ namespace WebAPIHuisdierMonitor
             }
         }
 
-        private double CalculateMedianWeight(List<PetBed> DataPetBeds)
+
+        private double CalculateMedianWeightPerDay(List<PetBed> DataPetBeds)
         {
             List<float> Weights = new List<float>();
             foreach (PetBed petBed in DataPetBeds)
@@ -183,16 +234,7 @@ namespace WebAPIHuisdierMonitor
             }
             if (Weights.Count > 0 && Weights != null) //in case there is no data
             {
-                Weights.Sort();
-                int HalfIndex = Weights.Count() / 2;
-                if ((Weights.Count() % 2) == 0) //in case there is an even number of numbers, it is the average of the two middle numbers.
-                {
-                    return Weights[HalfIndex] + Weights[HalfIndex - 1] / 2;
-                }
-                else //otherwise it's just the middle number of a set of numbers
-                {
-                    return Weights[HalfIndex];
-                }
+                return CalculateMedian(Weights);
             }
             else
             {
@@ -200,7 +242,46 @@ namespace WebAPIHuisdierMonitor
             }
         }
 
-        private TimeSpan[] CalculateMeanTimes(List<FoodBowl> DataFoodBowl)
+        private double[] CalculateMedianWeightDayPart(List<FoodBowl> foodBowls)
+        {
+            List<FoodBowl> CleanedData = new List<FoodBowl>();
+            foreach (FoodBowl foodBowl in foodBowls)
+            {
+                if (foodBowl.Weight > 0)
+                {
+                    CleanedData.Add(foodBowl);
+                }
+            }
+            return GetMedians(SortTimes(CleanedData));
+        }
+
+        private double[] CalculateMedianWeightDayPart(List<WaterBowl> waterBowls)
+        {
+            List<WaterBowl> CleanedData = new List<WaterBowl>();
+            foreach (WaterBowl waterBowl in waterBowls)
+            {
+                if (waterBowl.Weight > 0)
+                {
+                    CleanedData.Add(waterBowl);
+                }
+            }
+            return GetMedians(SortTimes(CleanedData));
+        }
+
+        private double[] CalculateMedianWeightDayPart(List<PetBed> petBeds)
+        {
+            List<PetBed> CleanedData = new List<PetBed>();
+            foreach (PetBed petBed in petBeds)
+            {
+                if (petBed.Weight > 0)
+                {
+                    CleanedData.Add(petBed);
+                }
+            }
+            return GetMedians(SortTimes(CleanedData));
+        }
+
+        private DateTime[] CalculateMeanTimes(List<FoodBowl> DataFoodBowl)
         {
             List<DateTime> Times = new List<DateTime>();
 
@@ -211,7 +292,7 @@ namespace WebAPIHuisdierMonitor
             return GetMeanTimes(SortTimes(Times));
         }
 
-        private TimeSpan[] CalculateMeanTimes(List<WaterBowl> DataWaterBowl)
+        private DateTime[] CalculateMeanTimes(List<WaterBowl> DataWaterBowl)
         {
             List<DateTime> Times = new List<DateTime>();
 
@@ -222,7 +303,7 @@ namespace WebAPIHuisdierMonitor
             return GetMeanTimes(SortTimes(Times));
         }
 
-        private TimeSpan[] CalculateMeanTimes(List<PetBed> DataPetBed)
+        private DateTime[] CalculateMeanTimes(List<PetBed> DataPetBed)
         {
             List<DateTime> Times = new List<DateTime>();
 
@@ -234,7 +315,7 @@ namespace WebAPIHuisdierMonitor
         }
 
 
-        private TimeSpan[] CalculateMedianTimes(List<FoodBowl> DataFoodBowls)
+        private DateTime[] CalculateMedianTimes(List<FoodBowl> DataFoodBowls)
         {
             List<DateTime> Times = new List<DateTime>();
 
@@ -245,7 +326,7 @@ namespace WebAPIHuisdierMonitor
             return GetMedianTimes(SortTimes(Times));
         }
 
-        private TimeSpan[] CalculateMedianTimes(List<WaterBowl> DataWaterBowls)
+        private DateTime[] CalculateMedianTimes(List<WaterBowl> DataWaterBowls)
         {
             List<DateTime> Times = new List<DateTime>();
 
@@ -256,7 +337,7 @@ namespace WebAPIHuisdierMonitor
             return GetMedianTimes(SortTimes(Times));
         }
 
-        private TimeSpan[] CalculateMedianTimes(List<PetBed> DataPetBeds)
+        private DateTime[] CalculateMedianTimes(List<PetBed> DataPetBeds)
         {
             List<DateTime> Times = new List<DateTime>();
 
@@ -265,6 +346,114 @@ namespace WebAPIHuisdierMonitor
                 Times.Add(Data.Time);
             }
             return GetMedianTimes(SortTimes(Times));
+        }
+
+        private List<List<int>> SortTimes(List<FoodBowl> foodBowls)
+        {
+            List<List<int>> Day = new List<List<int>>();
+
+            List<int> Morning = new List<int>();
+            List<int> Afternoon = new List<int>();
+            List<int> Evening = new List<int>();
+            List<int> Night = new List<int>();
+
+            Day.Add(Night);
+            Day.Add(Morning);
+            Day.Add(Afternoon);
+            Day.Add(Evening);
+
+            foreach (FoodBowl foodBowl in foodBowls)
+            {
+                if (foodBowl.Time.TimeOfDay >= NightToMorning.TimeOfDay && foodBowl.Time.TimeOfDay < MorningToAfternoon.TimeOfDay) //time between 6.00 and 12.00
+                {
+                    Morning.Add(foodBowl.Weight);
+                }
+                else if (foodBowl.Time.TimeOfDay >= MorningToAfternoon.TimeOfDay && foodBowl.Time.TimeOfDay < AfternoonToEvening.TimeOfDay) //time between 12.00 and 18.00
+                {
+                    Afternoon.Add(foodBowl.Weight);
+                }
+                else if (foodBowl.Time.TimeOfDay >= AfternoonToEvening.TimeOfDay && foodBowl.Time.TimeOfDay < EveningToNight.TimeOfDay) //time between 18.00 and 0.00
+                {
+                    Evening.Add(foodBowl.Weight);
+                }
+                else //time between 0.00 and 6.00
+                {
+                    Night.Add(foodBowl.Weight);
+                }
+            }
+            return Day;
+        }
+
+        private List<List<float>> SortTimes(List<WaterBowl> waterBowls)
+        {
+            List<List<float>> Day = new List<List<float>>();
+
+            List<float> Morning = new List<float>();
+            List<float> Afternoon = new List<float>();
+            List<float> Evening = new List<float>();
+            List<float> Night = new List<float>();
+
+            Day.Add(Night);
+            Day.Add(Morning);
+            Day.Add(Afternoon);
+            Day.Add(Evening);
+
+            foreach (WaterBowl waterBowl in waterBowls)
+            {
+                if (waterBowl.Time.TimeOfDay >= NightToMorning.TimeOfDay && waterBowl.Time.TimeOfDay < MorningToAfternoon.TimeOfDay) //time between 6.00 and 12.00
+                {
+                    Morning.Add(waterBowl.Weight);
+                }
+                else if (waterBowl.Time.TimeOfDay >= MorningToAfternoon.TimeOfDay && waterBowl.Time.TimeOfDay < AfternoonToEvening.TimeOfDay) //time between 12.00 and 18.00
+                {
+                    Afternoon.Add(waterBowl.Weight);
+                }
+                else if (waterBowl.Time.TimeOfDay >= AfternoonToEvening.TimeOfDay && waterBowl.Time.TimeOfDay < EveningToNight.TimeOfDay) //time between 18.00 and 0.00
+                {
+                    Evening.Add(waterBowl.Weight);
+                }
+                else //time between 0.00 and 6.00
+                {
+                    Night.Add(waterBowl.Weight);
+                }
+            }
+            return Day;
+        }
+
+        private List<List<float>> SortTimes(List<PetBed> petBeds)
+        {
+            List<List<float>> Day = new List<List<float>>();
+
+            List<float> Morning = new List<float>();
+            List<float> Afternoon = new List<float>();
+            List<float> Evening = new List<float>();
+            List<float> Night = new List<float>();
+
+            Day.Add(Night);
+            Day.Add(Morning);
+            Day.Add(Afternoon);
+            Day.Add(Evening);
+
+            foreach (PetBed petBed in petBeds)
+            {
+                if (petBed.Time.TimeOfDay >= NightToMorning.TimeOfDay && petBed.Time.TimeOfDay < MorningToAfternoon.TimeOfDay) //time between 6.00 and 12.00
+                {
+                    Morning.Add(petBed.Weight);
+                }
+                else if (petBed.Time.TimeOfDay >= MorningToAfternoon.TimeOfDay && petBed.Time.TimeOfDay < AfternoonToEvening.TimeOfDay) //time between 12.00 and 18.00
+                {
+                    Afternoon.Add(petBed.Weight);
+                }
+                else if (petBed.Time.TimeOfDay >= AfternoonToEvening.TimeOfDay && petBed.Time.TimeOfDay < EveningToNight.TimeOfDay) //time between 18.00 and 0.00
+                {
+                    Evening.Add(petBed.Weight);
+                }
+                else //time between 0.00 and 6.00
+                {
+                    Night.Add(petBed.Weight);
+                }
+            }
+            return Day;
         }
 
 
@@ -277,62 +466,82 @@ namespace WebAPIHuisdierMonitor
             List<DateTime> Evening = new List<DateTime>();
             List<DateTime> Night = new List<DateTime>();
 
+            Day.Add(Night);
             Day.Add(Morning);
             Day.Add(Afternoon);
             Day.Add(Evening);
-            Day.Add(Night);
 
             foreach (DateTime dateTime in Times)
             {
-                if (DateTime.Compare(new DateTime(), dateTime) > 0)
+                if (dateTime.TimeOfDay >= NightToMorning.TimeOfDay && dateTime.TimeOfDay < MorningToAfternoon.TimeOfDay) //time between 6.00 and 12.00
                 {
-                    if (dateTime.TimeOfDay >= NightToMorning.TimeOfDay && dateTime.TimeOfDay < MorningToAfternoon.TimeOfDay) //time between 6.00 and 12.00
-                    {
-                        Morning.Add(dateTime);
-                    }
-                    else if (dateTime.TimeOfDay >= MorningToAfternoon.TimeOfDay && dateTime.TimeOfDay < AfternoonToEvening.TimeOfDay) //time between 12.00 and 18.00
-                    {
-                        Afternoon.Add(dateTime);
-                    }
-                    else if (dateTime.TimeOfDay >= AfternoonToEvening.TimeOfDay && dateTime.TimeOfDay < EveningToNight.TimeOfDay) //time between 18.00 and 0.00
-                    {
-                        Evening.Add(dateTime);
-                    }
-                    else //time between 0.00 and 6.00
-                    {
-                        Night.Add(dateTime);
-                    }
+                    Morning.Add(dateTime);
+                }
+                else if (dateTime.TimeOfDay >= MorningToAfternoon.TimeOfDay && dateTime.TimeOfDay < AfternoonToEvening.TimeOfDay) //time between 12.00 and 18.00
+                {
+                    Afternoon.Add(dateTime);
+                }
+                else if (dateTime.TimeOfDay >= AfternoonToEvening.TimeOfDay && dateTime.TimeOfDay < EveningToNight.TimeOfDay) //time between 18.00 and 0.00
+                {
+                    Evening.Add(dateTime);
+                }
+                else //time between 0.00 and 6.00
+                {
+                    Night.Add(dateTime);
                 }
             }
             return Day;
         }
 
-        private TimeSpan[] GetMeanTimes(List<List<DateTime>> Day)
+        private double[] GetMeans(List<List<int>> Day)
         {
-            TimeSpan[] Means = { new TimeSpan(), new TimeSpan(), new TimeSpan(), new TimeSpan() };
+            double[] Means = { 0, 0, 0, 0 };
 
             if (Day[0].Count > 0)
             {
-                Means[0] = CalculateMeanOnTicksTime(Day[0]);
+                Means[0] = Day[0].Average();
             }
             if (Day[1].Count > 0)
             {
-                Means[1] = CalculateMeanOnTicksTime(Day[1]);
+                Means[1] = Day[1].Average();
             }
             if (Day[2].Count > 0)
             {
-                Means[2] = CalculateMeanOnTicksTime(Day[2]);
+                Means[2] = Day[2].Average();
             }
             if (Day[3].Count > 0)
             {
-                Means[3] = CalculateMeanOnTicksTime(Day[3]);
+                Means[3] = Day[3].Average();
             }
             return Means;
         }
 
-        private TimeSpan[] GetMedianTimes(List<List<DateTime>> Day)
+        private double[] GetMeans(List<List<float>> Day)
         {
-            TimeSpan[] Median = { new TimeSpan(), new TimeSpan(), new TimeSpan(), new TimeSpan() };
+            double[] Means = { 0, 0, 0, 0 };
+
+            if (Day[0].Count > 0)
+            {
+                Means[0] = Day[0].Average();
+            }
+            if (Day[1].Count > 0)
+            {
+                Means[1] = Day[1].Average();
+            }
+            if (Day[2].Count > 0)
+            {
+                Means[2] = Day[2].Average();
+            }
+            if (Day[3].Count > 0)
+            {
+                Means[3] = Day[3].Average();
+            }
+            return Means;
+        }
+
+        private double[] GetMedians(List<List<int>> Day)
+        {
+            double[] Median = { 0, 0, 0, 0 };
 
             if (Day[0].Count > 0)
             {
@@ -353,29 +562,154 @@ namespace WebAPIHuisdierMonitor
             return Median;
         }
 
-        private TimeSpan CalculateMedian(List<DateTime> dateTimes)
+        private double[] GetMedians(List<List<float>> Day)
         {
+            double[] Median = { 0, 0, 0, 0 };
+
+            if (Day[0].Count > 0)
+            {
+                Median[0] = CalculateMedian(Day[0]);
+            }
+            if (Day[1].Count > 0)
+            {
+                Median[1] = CalculateMedian(Day[1]);
+            }
+            if (Day[2].Count > 0)
+            {
+                Median[2] = CalculateMedian(Day[2]);
+            }
+            if (Day[3].Count > 0)
+            {
+                Median[3] = CalculateMedian(Day[3]);
+            }
+            return Median;
+        }
+
+
+        private DateTime[] GetMeanTimes(List<List<DateTime>> Day)
+        {
+            DateTime[] Means = { new DateTime(), new DateTime(), new DateTime(), new DateTime() };
+
+            if (Day[0].Count > 0)
+            {
+                Means[0] = CalculateMeanOnTicksTime(Day[0]);
+            }
+            if (Day[1].Count > 0)
+            {
+                Means[1] = CalculateMeanOnTicksTime(Day[1]);
+            }
+            if (Day[2].Count > 0)
+            {
+                Means[2] = CalculateMeanOnTicksTime(Day[2]);
+            }
+            if (Day[3].Count > 0)
+            {
+                Means[3] = CalculateMeanOnTicksTime(Day[3]);
+            }
+            return Means;
+        }
+
+        private DateTime[] GetMedianTimes(List<List<DateTime>> Day)
+        {
+            DateTime[] Median = { new DateTime(), new DateTime(), new DateTime(), new DateTime() };
+
+            if (Day[0].Count > 0)
+            {
+                Median[0] = CalculateMedian(Day[0]);
+            }
+            if (Day[1].Count > 0)
+            {
+                Median[1] = CalculateMedian(Day[1]);
+            }
+            if (Day[2].Count > 0)
+            {
+                Median[2] = CalculateMedian(Day[2]);
+            }
+            if (Day[3].Count > 0)
+            {
+                Median[3] = CalculateMedian(Day[3]);
+            }
+            return Median;
+        }
+
+        private double CalculateMedian(List<int> Weights)
+        {
+            Weights.Sort();
+            int HalfIndex = Weights.Count() / 2;
+            if ((Weights.Count() % 2) == 0) //in case there is an even number of numbers, it is the average of the two middle numbers.
+            {
+                return Weights[HalfIndex] + Weights[HalfIndex - 1] / 2;
+            }
+            else //otherwise it's just the middle number of a set of numbers
+            {
+                return Weights[HalfIndex];
+            }
+        }
+
+        private double CalculateMedian(List<float> Weights)
+        {
+            Weights.Sort();
+            int HalfIndex = Weights.Count() / 2;
+            if ((Weights.Count() % 2) == 0) //in case there is an even number of numbers, it is the average of the two middle numbers.
+            {
+                return Weights[HalfIndex] + Weights[HalfIndex - 1] / 2;
+            }
+            else //otherwise it's just the middle number of a set of numbers
+            {
+                return Weights[HalfIndex];
+            }
+        }
+
+        private DateTime CalculateMedian(List<DateTime> dateTimes)
+        {
+            DateTime dateTime = new DateTime();
             dateTimes = dateTimes.OrderBy(x => x.TimeOfDay).ToList();
             int HalfIndex = dateTimes.Count() / 2;
             if ((dateTimes.Count() % 2) == 0) //in case there is an even number of numbers, it is the average of the two middle numbers.
             {
-                return new TimeSpan((dateTimes[HalfIndex].TimeOfDay.Ticks + dateTimes[HalfIndex - 1].TimeOfDay.Ticks) / 2);
+                TimeSpan MedianTime = new TimeSpan((dateTimes[HalfIndex].TimeOfDay.Ticks + dateTimes[HalfIndex - 1].TimeOfDay.Ticks) / 2);
+                return dateTime.Add(MedianTime);
             }
             else //otherwise it's just the middle number of a set of numbers
             {
-                return new TimeSpan(dateTimes[HalfIndex].TimeOfDay.Ticks);
+                TimeSpan MedianTime = new TimeSpan(dateTimes[HalfIndex].TimeOfDay.Ticks);
+                return dateTime.Add(MedianTime);
             }
         }
 
-        private TimeSpan CalculateMeanOnTicksTime(List<DateTime> dateTimes)
+        private DateTime CalculateMeanOnTicksTime(List<DateTime> dateTimes)
         {
             long Ticks = 0;
+            DateTime dateTime = new DateTime();
             foreach (DateTime time in dateTimes)
             {
                 Ticks += time.TimeOfDay.Ticks;
             }
             TimeSpan MeanTime = new TimeSpan(Ticks / dateTimes.Count); //calculate average time that something happened
-            return MeanTime;
+            return dateTime.Add(MeanTime);
+        }
+
+        /*onderstaande is een test, niet een eigenlijke functie
+         * Deze functie is om te testen of het analyseren eigenlijk werkt met behulp van mock_data
+         * Van deze mock_data wordt alleen het gewicht en de tijd gebruikt
+         * Al het andere is gevuld met onzin
+         */
+
+        public Analyse Test()
+        {
+            StreamReader sr1 = new StreamReader(@"C:\Users\silas\Downloads\Test.json");
+            string JSON1 = sr1.ReadToEnd();
+            List<FoodBowl> foodBowls = JsonConvert.DeserializeObject<List<FoodBowl>>(JSON1);
+
+            StreamReader sr2 = new StreamReader(@"C:\Users\silas\Downloads\Test2.json");
+            string JSON2 = sr2.ReadToEnd();
+            List<WaterBowl> waterBowls = JsonConvert.DeserializeObject<List<WaterBowl>>(JSON2);
+
+            StreamReader sr3 = new StreamReader(@"C:\Users\silas\Downloads\Test3.json");
+            string JSON3 = sr3.ReadToEnd();
+            List<PetBed> petBeds = JsonConvert.DeserializeObject<List<PetBed>>(JSON3);
+
+            return new Analyse(foodBowls, waterBowls, petBeds);
         }
     }
 }

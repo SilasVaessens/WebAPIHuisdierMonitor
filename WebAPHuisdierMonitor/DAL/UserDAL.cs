@@ -1,16 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
 using WebAPIHuisdierMonitor.Model;
 
 namespace WebAPIHuisdierMonitor.DAL
 {
     public static class UserDAL
     {
-        private readonly static string ConnString = "Data Source=192.168.96.3,1913;Initial Catalog=PetMonitorDB;Persist Security Info=True;User ID=user;Password=sv22010899v";
+        private readonly static string ConnString = "Server=tcp:petmonitor.database.windows.net,1433;Initial Catalog=PetMonitorDB;Persist Security Info=False;User ID=PetMonitor;Password=99Siva'02;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;";//"Data Source=192.168.96.3,1913;Initial Catalog=PetMonitorDB;Persist Security Info=True;User ID=user;Password=sv22010899v";
         private readonly static SqlConnection conn = new SqlConnection(ConnString);
 
 
@@ -78,7 +75,7 @@ namespace WebAPIHuisdierMonitor.DAL
             }
 
         }
-        public static void AddUser (User user)
+        public static void AddUser(User user)
         {
             using SqlCommand cmd = new SqlCommand(ConnString);
             cmd.Connection = conn;

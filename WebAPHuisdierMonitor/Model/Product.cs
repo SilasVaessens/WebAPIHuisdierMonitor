@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
 using WebAPIHuisdierMonitor.DAL;
 
 namespace WebAPIHuisdierMonitor.Model
@@ -32,7 +29,7 @@ namespace WebAPIHuisdierMonitor.Model
             Type = KindOf;
         }
 
-        public Product(int Product, int User, string Identifier, int Measurement, 
+        public Product(int Product, int User, string Identifier, int Measurement,
             DateTime MeasurementTime) // voor gebruik bij measurements
         {
             ProductID = Product;
@@ -86,7 +83,7 @@ namespace WebAPIHuisdierMonitor.Model
             }
             if (Exists == false)
             {
-                throw new ArgumentNullException(); 
+                throw new ArgumentNullException();
             }
         }
 
@@ -133,9 +130,13 @@ namespace WebAPIHuisdierMonitor.Model
             {
                 try
                 {
-                    if (ProductID == 0)
+                    if (product.ProductID == 0)
                     {
-                        ProductDAL.UpdateProduct(product.UserID, product.Name, ProductDAL.GetProductID(product.UniqueIdentifier));
+                        Product CurrentUserID = ProductDAL.GetProductIDAndUserID(product.UniqueIdentifier);
+                        if (CurrentUserID.UserID > 0)
+                        {
+                            throw new AccessViolationException();
+                        }
                     }
                     else
                     {
@@ -145,6 +146,10 @@ namespace WebAPIHuisdierMonitor.Model
                 catch (DivideByZeroException) //als er iets misgaat in de database
                 {
                     throw;
+                }
+                catch (InvalidCastException) //product is nog niet geregistreerd bij gebruiker
+                {
+                    ProductDAL.UpdateProduct(product.UserID, product.Name, ProductDAL.GetProductID(product.UniqueIdentifier));
                 }
             }
             if (Exists == null)

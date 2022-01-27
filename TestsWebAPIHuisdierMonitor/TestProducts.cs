@@ -175,15 +175,5 @@ namespace TestsWebAPIHuisdierMonitor
             GetIDs.DeleteProduct(GetIDs.ProductID, GetIDs.UserID);
         }
         */
-        [TestMethod]
-        public void Specific()
-        {
-            Product test = new Product();
-            test.ProductID = 0;
-            test.UserID = 4;
-            test.Name = "Voerbak";
-            test.UniqueIdentifier = "Voerbak";
-            test.UpdateProduct(test);
-        }
     }
 }

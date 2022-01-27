@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
 using WebAPIHuisdierMonitor.DAL;
 
 namespace WebAPIHuisdierMonitor.Model
@@ -99,8 +96,8 @@ namespace WebAPIHuisdierMonitor.Model
                         continue;
                     }
                     catch (InvalidCastException)
-                    { 
-                        throw; 
+                    {
+                        throw;
                     }
                 }
             }

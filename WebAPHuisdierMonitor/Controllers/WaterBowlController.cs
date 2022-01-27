@@ -1,9 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using WebAPIHuisdierMonitor.Model;
 
 namespace WebAPIHuisdierMonitor.Controllers
@@ -31,7 +28,7 @@ namespace WebAPIHuisdierMonitor.Controllers
                 return StatusCode(StatusCodes.Status404NotFound);
             }
             catch (InvalidCastException)
-            { 
+            {
                 return StatusCode(StatusCodes.Status401Unauthorized);
             }
         }

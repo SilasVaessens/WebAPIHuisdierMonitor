@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
 using WebAPIHuisdierMonitor.DAL;
 
 namespace WebAPIHuisdierMonitor.Model
@@ -102,7 +99,7 @@ namespace WebAPIHuisdierMonitor.Model
 
         public List<FoodBowl> GetDataFoodbowl(Pet pet)
         {
-            bool? Exists = PetDAL.PetExists(pet.UserID);
+            bool? Exists = PetDAL.PetExists(pet.RFID);
             if (Exists == true)
             {
                 try
@@ -127,7 +124,7 @@ namespace WebAPIHuisdierMonitor.Model
 
         public List<WaterBowl> GetDataWaterbowl(Pet pet)
         {
-            bool? Exists = PetDAL.PetExists(pet.UserID);
+            bool? Exists = PetDAL.PetExists(pet.RFID);
             if (Exists == true)
             {
                 try
@@ -151,7 +148,7 @@ namespace WebAPIHuisdierMonitor.Model
 
         public List<PetBed> GetDataPetBed(Pet pet)
         {
-            bool? Exists = PetDAL.PetExists(pet.UserID);
+            bool? Exists = PetDAL.PetExists(pet.RFID);
             if (Exists == true)
             {
                 try
@@ -173,9 +170,26 @@ namespace WebAPIHuisdierMonitor.Model
             }
         }
 
+        public Analyse Analyze(Pet pet)
+        {
+            try
+            {
+                return new Analyse(GetDataFoodbowl(pet), GetDataWaterbowl(pet), GetDataPetBed(pet));
+            }
+            catch (DivideByZeroException)
+            {
+                throw;
+            }
+            catch (ArgumentException)
+            {
+                throw;
+            }
+        }
+
+
         public void UpdatePet(Pet pet)
         {
-            bool? Exists = PetDAL.PetExists(pet.UserID);
+            bool? Exists = PetDAL.PetExists(pet.RFID);
             if (Exists == true)
             {
                 try

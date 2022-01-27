@@ -1,12 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using WebAPIHuisdierMonitor.Model;
-using System.Data.SqlClient;
-using Microsoft.AspNetCore.Http;
-using System.Diagnostics;
 
 namespace WebAPIHuisdierMonitor.Controllers
 {
@@ -49,7 +44,7 @@ namespace WebAPIHuisdierMonitor.Controllers
             catch (ArgumentNullException) //product bestaat niet in database
             {
                 return StatusCode(StatusCodes.Status404NotFound);
-            } 
+            }
         }
 
         [HttpPost("GetAll")]
@@ -65,13 +60,13 @@ namespace WebAPIHuisdierMonitor.Controllers
             }
             catch (ArgumentNullException) //geen geregistreerde producten bij user
             {
-                return StatusCode(StatusCodes.Status404NotFound); 
+                return StatusCode(StatusCodes.Status404NotFound);
             }
 
         }
 
         [HttpPut]
-        public IActionResult UpdateProduct([FromBody]Product product)
+        public IActionResult UpdateProduct([FromBody] Product product)
         {
             try
             {
@@ -85,6 +80,10 @@ namespace WebAPIHuisdierMonitor.Controllers
             catch (ArgumentNullException) //Product bestaat niet in database
             {
                 return StatusCode(StatusCodes.Status404NotFound);
+            }
+            catch (AccessViolationException) // Product is al geregistreerd
+            {
+                return StatusCode(StatusCodes.Status409Conflict);
             }
 
         }

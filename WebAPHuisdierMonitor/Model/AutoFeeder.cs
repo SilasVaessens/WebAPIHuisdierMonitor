@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
 using WebAPIHuisdierMonitor.DAL;
 
 namespace WebAPIHuisdierMonitor.Model
@@ -122,7 +119,7 @@ namespace WebAPIHuisdierMonitor.Model
                 }
                 catch (DivideByZeroException) // sql error bij het verwijderen van alle measurements
                 {
-                    throw; 
+                    throw;
                 }
             }
             if (Exists == null) // sql error bij het kijken of de het product bestaat

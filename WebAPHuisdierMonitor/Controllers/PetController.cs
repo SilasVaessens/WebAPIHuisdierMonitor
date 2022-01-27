@@ -1,10 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using WebAPIHuisdierMonitor.Model;
-using Microsoft.AspNetCore.Http;
 
 
 namespace WebAPIHuisdierMonitor.Controllers
@@ -96,6 +93,25 @@ namespace WebAPIHuisdierMonitor.Controllers
             }
         }
 
+        [HttpGet]// Post("Analyze")]
+        public IActionResult AnalyzePet()//[FromBody] Pet pet)
+        {
+            try
+            {
+                //return Ok(StaticPet.Analyze(pet));
+                Analyse analyse = new Analyse();
+                return Ok(analyse.Test());
+            }
+            catch (DivideByZeroException)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+            catch (ArgumentNullException)
+            {
+                return StatusCode(StatusCodes.Status404NotFound);
+            }
+
+        }
 
         [HttpPut]
         public IActionResult UpdatePet([FromBody] Pet pet)

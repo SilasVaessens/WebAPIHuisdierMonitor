@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
 using WebAPIHuisdierMonitor.Model;
 
 
@@ -11,9 +9,9 @@ namespace WebAPIHuisdierMonitor.DAL
 {
     public static class PetDAL
     {
-        private readonly static string ConnString = "Data Source=192.168.96.3,1913;Initial Catalog=PetMonitorDB;Persist Security Info=True;User ID=user;Password=sv22010899v";
+        private readonly static string ConnString = "Server=tcp:petmonitor.database.windows.net,1433;Initial Catalog=PetMonitorDB;Persist Security Info=False;User ID=PetMonitor;Password=99Siva'02;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;";//"Data Source=192.168.96.3,1913;Initial Catalog=PetMonitorDB;Persist Security Info=True;User ID=user;Password=sv22010899v";
         private readonly static SqlConnection conn = new SqlConnection(ConnString);
-        
+
         public static bool? PetExists(string RFID)
         {
             string rfid = null;
@@ -79,7 +77,7 @@ namespace WebAPIHuisdierMonitor.DAL
             }
         }
 
-        public static void AddPet (Pet pet)
+        public static void AddPet(Pet pet)
         {
             using SqlCommand cmd = new SqlCommand(ConnString);
             cmd.Connection = conn;
@@ -102,7 +100,7 @@ namespace WebAPIHuisdierMonitor.DAL
             }
         }
 
-        public static void DeletePet (int PetID)
+        public static void DeletePet(int PetID)
         {
             using SqlCommand cmd = new SqlCommand(ConnString);
             cmd.Connection = conn;
@@ -121,7 +119,7 @@ namespace WebAPIHuisdierMonitor.DAL
             }
         }
 
-        public static void UpdatePet (int PetID, string Name, int AmountFood)
+        public static void UpdatePet(int PetID, string Name, int AmountFood)
         {
             using SqlCommand cmd = new SqlCommand(ConnString);
             cmd.Connection = conn;
@@ -154,7 +152,7 @@ namespace WebAPIHuisdierMonitor.DAL
             {
                 conn.Open();
                 using SqlDataReader reader = cmd.ExecuteReader();
-                while (reader.Read()) 
+                while (reader.Read())
                 {
                     Pet pet = new Pet
                     {

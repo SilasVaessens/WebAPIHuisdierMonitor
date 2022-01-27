@@ -25,7 +25,7 @@ namespace TestsWebAPIHuisdierMonitor
             {
                 Product AddedProduct = product.GetProduct();
                 AddedProduct.UserID = 1;
-                AddedProduct.UpdateProduct(AddedProduct.ProductID, AddedProduct.UserID, product.Name, AddedProduct.UniqueIdentifier);
+                AddedProduct.UpdateProduct(AddedProduct);
                 AddedProduct.DeleteProduct(AddedProduct.ProductID, AddedProduct.UserID);
                 Assert.IsTrue(true);
             }
@@ -46,7 +46,8 @@ namespace TestsWebAPIHuisdierMonitor
             product.AddProduct(product.UniqueIdentifier, product.Type);
             product = product.GetProduct();
             product.UserID = 1;
-            product.UpdateProduct(product.ProductID, product.UserID, "Product", product.UniqueIdentifier);
+            product.Name = "Product";
+            product.UpdateProduct(product);
 
             PetBed petBed = new PetBed(product.ProductID, product.UserID, product.UniqueIdentifier, 0, DateTime.Now, "0", 0);
             petBed.AddMeasurement(petBed);
@@ -76,7 +77,8 @@ namespace TestsWebAPIHuisdierMonitor
             product.AddProduct(product.UniqueIdentifier, product.Type);
             product = product.GetProduct();
             product.UserID = 1;
-            product.UpdateProduct(product.ProductID, product.UserID, "Product", product.UniqueIdentifier);
+            product.Name = "Product";
+            product.UpdateProduct(product);
 
             PetBed petBed = new PetBed(product.ProductID, product.UserID, product.UniqueIdentifier, 0, DateTime.Now, "123456789", 10);
             petBed.AddMeasurement(petBed);
@@ -116,7 +118,8 @@ namespace TestsWebAPIHuisdierMonitor
             product.AddProduct(product.UniqueIdentifier, product.Type);
             product = product.GetProduct();
             product.UserID = 1;
-            product.UpdateProduct(product.ProductID, product.UserID, "Product", product.UniqueIdentifier);
+            product.Name = "Product";
+            product.UpdateProduct(product);
 
             PetBed petBed = new PetBed(product.ProductID, product.UserID, product.UniqueIdentifier, 0, DateTime.Now, "0", 0);
             petBed.AddMeasurement(petBed);
@@ -150,7 +153,8 @@ namespace TestsWebAPIHuisdierMonitor
             product.AddProduct(product.UniqueIdentifier, product.Type);
             product = product.GetProduct();
             product.UserID = 1;
-            product.UpdateProduct(product.ProductID, product.UserID, "Product", product.UniqueIdentifier);
+            product.Name = "Product";
+            product.UpdateProduct(product);
 
             PetBed petBed = new PetBed(product.ProductID, product.UserID, product.UniqueIdentifier, 0, DateTime.Now, "123456789", 10);
             petBed.AddMeasurement(petBed);

@@ -1,10 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using WebAPIHuisdierMonitor.Model;
-using Microsoft.AspNetCore.Http;
 
 
 namespace WebAPIHuisdierMonitor.Controllers
@@ -29,7 +26,7 @@ namespace WebAPIHuisdierMonitor.Controllers
             }
             catch (ArgumentNullException) // User staat al in database
             {
-                return StatusCode(StatusCodes.Status409Conflict); 
+                return StatusCode(StatusCodes.Status409Conflict);
             }
         }
 
