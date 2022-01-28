@@ -93,7 +93,7 @@ namespace WebAPIHuisdierMonitor.Controllers
             }
         }
 
-        [HttpGet]// Post("Analyze")]
+        [HttpPost("Analyze")]
         public IActionResult AnalyzePet()//[FromBody] Pet pet)
         {
             try
