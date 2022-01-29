@@ -697,15 +697,17 @@ namespace WebAPIHuisdierMonitor
 
         public Analyse Test()
         {
-            StreamReader sr1 = new StreamReader(@"C:\Users\silas\Downloads\Test.json");
+            string currentDirectory = Directory.GetCurrentDirectory();
+
+            StreamReader sr1 = new StreamReader(Path.Combine(currentDirectory, "AnalyseData", "Test.json"));
             string JSON1 = sr1.ReadToEnd();
             List<FoodBowl> foodBowls = JsonConvert.DeserializeObject<List<FoodBowl>>(JSON1);
 
-            StreamReader sr2 = new StreamReader(@"C:\Users\silas\Downloads\Test2.json");
+            StreamReader sr2 = new StreamReader(Path.Combine(currentDirectory, "AnalyseData", "Test2.json"));
             string JSON2 = sr2.ReadToEnd();
             List<WaterBowl> waterBowls = JsonConvert.DeserializeObject<List<WaterBowl>>(JSON2);
 
-            StreamReader sr3 = new StreamReader(@"C:\Users\silas\Downloads\Test3.json");
+            StreamReader sr3 = new StreamReader(Path.Combine(currentDirectory, "AnalyseData", "Test3.json"));
             string JSON3 = sr3.ReadToEnd();
             List<PetBed> petBeds = JsonConvert.DeserializeObject<List<PetBed>>(JSON3);
 
