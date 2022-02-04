@@ -72,7 +72,7 @@ namespace WebAPIHuisdierMonitor.Controllers
             try
             {
                 switch (pet.Name)
-                {
+                {   
                     case "Foodbowl":
                         return Ok(StaticPet.GetDataFoodbowl(pet));
                     case "Waterbowl":
